@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nice Center Oil – ตัวแทนจำหน่ายน้ำมันเครื่องอย่างเป็นทางการ</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<!-- Noto Sans Thai: formal, clean sans-serif Thai headlines -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Barlow:ital,wght@0,400;0,600;0,700;0,900;1,700&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          nice: '#ed5b2d',
+          cream: '#f6f6e9',
+          dark: '#291b25',
+          castrol: '#099247',
+        },
+        fontFamily: {
+          sans: ['Noto Sans Thai', 'sans-serif'],
+          display: ['Outfit', 'sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: #f6f6e9; font-family: 'Noto Sans Thai', sans-serif; overflow-x: hidden; }
+
+  /* Thai headers — Noto Sans Thai */
+  .thai-head { font-family: 'Noto Sans Thai', sans-serif; font-weight: 800; line-height: 1.35; }
+
+  /* Navbar — iOS Liquid Glass */
+  #navbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%);
+    backdrop-filter: blur(32px) saturate(200%) brightness(1.05);
+    -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.05);
+    border-bottom: 1px solid rgba(255,255,255,0.16);
+    box-shadow: 0 4px 28px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(255,255,255,0.06);
+    transition: background 0.5s, box-shadow 0.5s;
+  }
+  #navbar .nav-link { color: rgba(255,255,255,0.78); transition: color 0.3s; font-weight: 500; letter-spacing: 0.02em; }
+  #navbar .nav-link:hover { color: #ed5b2d; }
+  #navbar.scrolled {
+    background: linear-gradient(135deg, rgba(12,12,24,0.9) 0%, rgba(8,8,16,0.94) 100%);
+    backdrop-filter: blur(32px) saturate(220%);
+    box-shadow: 0 4px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.1), 0 1px 0 rgba(237,91,45,0.2);
+  }
+
+  /* Hero canvas */
+  #hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+  /* Glass card */
+  .glass {
+    background: rgba(255,255,255,0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow: 0 8px 40px rgba(41,27,37,0.08);
+  }
+
+  /* Product card */
+  .product-card { transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s; cursor: pointer; }
+  .product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(41,27,37,0.12), 0 0 0 1px rgba(237,91,45,0.14); }
+  .product-card .card-shine { position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(135deg, rgba(255,255,255,0.35) 0%, transparent 60%); pointer-events: none; }
+
+  /* Province pill */
+  .province-pill { transition: all 0.25s; cursor: pointer; }
+  .province-pill:hover, .province-pill.active { background: #ed5b2d !important; color: #fff !important; transform: scale(1.02); box-shadow: 0 6px 24px rgba(237,91,45,0.35); border-color: transparent !important; }
+  .province-pill.active *, .province-pill:hover * { color: #fff !important; border-color: rgba(255,255,255,0.35) !important; }
+  .province-pill.active .text-xs.bg-nice { background: rgba(255,255,255,0.25) !important; }
+
+  /* ── INTERACTIVE PROVINCE MAP ── */
+  .prov-shape {
+    fill: rgba(237,91,45,0.10);
+    stroke: rgba(237,91,45,0.45);
+    stroke-width: 1.4;
+    stroke-linejoin: round;
+    cursor: pointer;
+    transition: fill 0.25s, stroke 0.25s, transform 0.35s cubic-bezier(0.34,1.56,0.64,1), filter 0.25s;
+    transform-box: fill-box;
+    transform-origin: center;
+    will-change: transform;
+  }
+  .prov-shape:hover {
+    fill: rgba(237,91,45,0.45);
+    stroke: #ed5b2d;
+    stroke-width: 2;
+    transform: scale(1.06);
+    filter: drop-shadow(0 8px 20px rgba(237,91,45,0.4));
+  }
+  .prov-shape.active {
+    fill: #ed5b2d;
+    stroke: #c93f15;
+    stroke-width: 2.2;
+    filter: drop-shadow(0 6px 18px rgba(237,91,45,0.5));
+  }
+  .prov-shape.hq {
+    fill: rgba(237,91,45,0.22);
+    stroke: #ed5b2d;
+    stroke-width: 2;
+  }
+  .prov-shape.hq.active { fill: #ed5b2d; }
+  .prov-label-text {
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    fill: #291b25;
+    pointer-events: none;
+    transition: fill 0.25s;
+    paint-order: stroke;
+    stroke: rgba(255,255,255,0.85);
+    stroke-width: 3;
+  }
+  body.theme-dark .prov-label-text { fill: #fff; stroke: rgba(0,0,0,0.7); }
+  .prov-group.active .prov-label-text { fill: #fff; stroke: rgba(0,0,0,0.4); }
+  .prov-group:hover .prov-label-text { fill: #fff; stroke: rgba(0,0,0,0.4); }
+  /* neighbor provinces — subtle backdrop */
+  .neighbor {
+    fill: rgba(41,27,37,0.04);
+    stroke: rgba(41,27,37,0.10);
+    stroke-width: 1;
+  }
+  body.theme-dark .neighbor {
+    fill: rgba(255,255,255,0.03);
+    stroke: rgba(255,255,255,0.06);
+  }
+
+  /* District chip */
+  .district-pill {
+    display: inline-flex; align-items: center;
+    background: rgba(237,91,45,0.07);
+    border: 1px solid rgba(237,91,45,0.18);
+    color: #5d3a25;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-family: 'Noto Sans Thai', sans-serif;
+    transition: all 0.2s;
+  }
+  body.theme-dark .district-pill {
+    background: rgba(237,91,45,0.12);
+    border-color: rgba(237,91,45,0.25);
+    color: rgba(255,255,255,0.88);
+  }
+  .district-pill.hq {
+    background: #ed5b2d;
+    border-color: #ed5b2d;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* Detail panel slide */
+  #prov-detail-panel { transition: opacity 0.3s, transform 0.3s; }
+  #prov-detail-panel.swap { opacity: 0; transform: translateY(8px); }
+
+  /* Province quick selector chips (above detail panel) */
+  .prov-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    color: var(--text-body);
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.22s;
+  }
+  .prov-chip .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .prov-chip .badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 999px;
+    letter-spacing: 0.08em;
+    font-family: 'Outfit', sans-serif;
+  }
+  .prov-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .prov-chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(237,91,45,0.35);
+  }
+  .prov-chip.active .dot { background: #fff; }
+  .prov-chip.active .badge { background: rgba(255,255,255,0.25); }
+  body.theme-dark .prov-chip { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
+  body.theme-dark .prov-chip:hover { color: #ed5b2d; border-color: rgba(237,91,45,0.6); }
+  body.theme-dark .prov-chip.active { background: var(--accent); color: #fff; }
+
+  /* CTA button */
+  .cta-btn { position: relative; overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; transform-style: preserve-3d; }
+  .cta-btn::before { content: ''; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(255,255,255,0.25) 0%, transparent 60%); pointer-events: none; }
+  .cta-btn:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 16px 50px rgba(237,91,45,0.45); }
+  .cta-btn:active { transform: scale(0.97); }
+
+  /* Stat number */
+  .stat-num { font-family: 'Barlow', sans-serif; font-weight: 900; font-style: italic; line-height: 1; }
+
+  /* Partner logo float */
+  .partner-logo-wrap { transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s; }
+  .partner-logo-wrap:hover { transform: translateY(-6px) scale(1.06); box-shadow: 0 20px 50px rgba(41,27,37,0.12); }
+
+  /* Scroll reveal */
+  .reveal { opacity: 1; transform: none; }
+
+  /* Map pin pulse */
+  @keyframes pulse-ring { 0% { transform: scale(0.6); opacity: 0.8; } 100% { transform: scale(2); opacity: 0; } }
+  .pulse-ring { animation: pulse-ring 1.8s ease-out infinite; }
+
+  /* Footer */
+  #footer { background: #291b25; }
+
+  /* Gradient text */
+  .grad-text { background: linear-gradient(135deg, #ed5b2d 0%, #f5a04a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  /* Thin separator */
+  .sep { background: linear-gradient(90deg, transparent, #ed5b2d 40%, transparent); height: 2px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: #f6f6e9; }
+  ::-webkit-scrollbar-thumb { background: #ed5b2d; border-radius: 4px; }
+
+  /* ─── SCROLLYTELLING SECTIONS ─── */
+  .story-section { position: relative; }
+
+  /* Exploded View */
+  #exploded-scene {
+    position: relative;
+    width: 100%; height: 100vh;
+    background: #040408;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .explode-bg-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(237,91,45,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(237,91,45,0.04) 1px,transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+  .explode-part {
+    position: absolute;
+    transition: none;
+    will-change: transform, opacity;
+    filter: drop-shadow(0 0 20px rgba(237,91,45,0.25));
+  }
+  .story-label {
+    position: absolute;
+    opacity: 0;
+    will-change: opacity, transform;
+    pointer-events: none;
+  }
+
+  /* Logistics Map */
+  #logistics-scene {
+    position: relative;
+    width: 100%; height: 100vh;
+    background: #06080f;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .map-route {
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    transition: none;
+  }
+  .map-city-dot {
+    opacity: 0;
+    transform-origin: center;
+    will-change: opacity, transform;
+  }
+  .map-city-label {
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  /* Golden Fluid */
+  #fluid-scene {
+    position: relative;
+    width: 100%; height: 100vh;
+    background: #08060a;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .fluid-label { opacity: 0; will-change: opacity, transform; }
+
+  /* Hero particles canvas */
+  #particles-canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 1;
+  }
+
+  /* Market Impact Section */
+  #market-impact { background: #040408; }
+  .impact-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; transition: border-color 0.3s, box-shadow 0.3s; }
+  .impact-card:hover { border-color: rgba(237,91,45,0.4); box-shadow: 0 0 40px rgba(237,91,45,0.1); }
+
+  /* FAB LINE */
+  #fab-line {
+    position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: #06C755;
+    box-shadow: 0 8px 32px rgba(6,199,85,0.45), 0 2px 8px rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.23,1,0.32,1), box-shadow 0.3s;
+    animation: fab-pulse 3s ease-in-out infinite;
+  }
+  #fab-line:hover { transform: scale(1.12) translateY(-3px); box-shadow: 0 16px 48px rgba(6,199,85,0.6); }
+  @keyframes fab-pulse {
+    0%, 100% { box-shadow: 0 8px 32px rgba(6,199,85,0.45), 0 0 0 0 rgba(6,199,85,0.4); }
+    50% { box-shadow: 0 8px 32px rgba(6,199,85,0.45), 0 0 0 12px rgba(6,199,85,0); }
+  }
+  #fab-line .fab-tooltip {
+    position: absolute; right: 72px; top: 50%; transform: translateY(-50%);
+    background: #06C755; color: white; font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+    padding: 6px 12px; border-radius: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s; box-shadow: 0 4px 16px rgba(6,199,85,0.4);
+  }
+  #fab-line:hover .fab-tooltip { opacity: 1; }
+
+  /* LINE OA pill button */
+  .line-pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #06C755; color: white;
+    font-family: 'Noto Sans Thai', sans-serif; font-weight: 700;
+    padding: 14px 28px; border-radius: 999px;
+    box-shadow: 0 8px 32px rgba(6,199,85,0.4);
+    transition: transform 0.25s, box-shadow 0.25s;
+    text-decoration: none; font-size: 1rem;
+  }
+  .line-pill:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 16px 48px rgba(6,199,85,0.55); }
+
+  /* scrollDown keyframe */
+  @keyframes scrollDown { 0% { top:0; opacity:1; height:40%; } 80% { top:60%; opacity:1; } 100% { top:100%; opacity:0; height:40%; } }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* float badge */
+  @keyframes float-badge { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-10px)} }
+  .float-badge { animation: float-badge 3s ease-in-out infinite; }
+
+  /* Oil drip */
+  @keyframes drip { 0%{height:0;opacity:0} 20%{opacity:1} 100%{height:100%;opacity:0.15} }
+  .drip-line { animation: drip 3s ease-in-out infinite; }
+
+  /* ════════════════════════ THEME SYSTEM ════════════════════════ */
+  /* Default = LIGHT (white-forward).  body.theme-dark = lava-red on graphite. */
+  :root {
+    --bg-page:       #ffffff;
+    --bg-soft:       #f6f5ef;
+    --bg-elev:       #ffffff;
+    --bg-cream:      #faf9f1;
+    --bg-hero:       #fafaf3;
+    --bg-fluid:      #f3f1ea;
+    --bg-impact:     #faf9f1;
+    --bg-footer:     #1f1418;
+    --text-strong:   #1a1117;
+    --text-body:     #3b2c34;
+    --text-muted:    rgba(41,27,37,0.62);
+    --text-soft:     rgba(41,27,37,0.42);
+    --text-faint:    rgba(41,27,37,0.22);
+    --border:        rgba(41,27,37,0.08);
+    --border-strong: rgba(41,27,37,0.14);
+    --surface:       rgba(255,255,255,0.78);
+    --surface-strong:rgba(255,255,255,0.94);
+    --accent:        #ed5b2d;
+    --accent-soft:   rgba(237,91,45,0.12);
+    --grad-1:        #ed5b2d;
+    --grad-2:        #f5a04a;
+    --grad-3:        #fcc862;
+  }
+  body.theme-dark {
+    --bg-page:       #15131a;
+    --bg-soft:       #1c1923;
+    --bg-elev:       #20202a;
+    --bg-cream:      #15131a;
+    --bg-hero:       #08070d;
+    --bg-fluid:      #0c0a12;
+    --bg-impact:     #0a0910;
+    --bg-footer:     #0d0b12;
+    --text-strong:   #f6f6e9;
+    --text-body:     rgba(246,246,233,0.86);
+    --text-muted:    rgba(246,246,233,0.58);
+    --text-soft:     rgba(246,246,233,0.35);
+    --text-faint:    rgba(246,246,233,0.18);
+    --border:        rgba(246,246,233,0.08);
+    --border-strong: rgba(246,246,233,0.16);
+    --surface:       rgba(255,255,255,0.04);
+    --surface-strong:rgba(255,255,255,0.07);
+    --accent:        #ed5b2d;
+    --accent-soft:   rgba(237,91,45,0.18);
+  }
+
+  body { background: var(--bg-page); color: var(--text-strong); transition: background-color 0.4s; }
+
+  /* ── NAVBAR ── */
+  #navbar {
+    background: linear-gradient(135deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.55) 100%) !important;
+    border-bottom: 1px solid var(--border) !important;
+    box-shadow: 0 4px 28px rgba(41,27,37,0.06), inset 0 1px 0 rgba(255,255,255,0.6) !important;
+  }
+  #navbar .nav-link { color: var(--text-body) !important; }
+  #navbar .nav-link:hover { color: var(--accent) !important; }
+  #navbar.scrolled {
+    background: linear-gradient(135deg, rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.88) 100%) !important;
+    box-shadow: 0 4px 22px rgba(41,27,37,0.1) !important;
+  }
+  body.theme-dark #navbar {
+    background: linear-gradient(135deg, rgba(20,17,25,0.55) 0%, rgba(15,12,20,0.7) 100%) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow: 0 4px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+  }
+  body.theme-dark #navbar .nav-link { color: rgba(255,255,255,0.78) !important; }
+  body.theme-dark #navbar.scrolled {
+    background: linear-gradient(135deg, rgba(12,10,18,0.92) 0%, rgba(8,6,14,0.96) 100%) !important;
+    box-shadow: 0 4px 28px rgba(0,0,0,0.5), 0 1px 0 rgba(237,91,45,0.2) !important;
+  }
+  /* logo brand strip in nav */
+  #navbar .text-white { color: var(--text-strong) !important; }
+  body.theme-dark #navbar .text-white { color: #fff !important; }
+  /* logo image: drop dark filter in light mode */
+  #navbar a[href="#hero"] img { filter: none !important; }
+  body.theme-dark #navbar a[href="#hero"] img { filter: drop-shadow(0 0 12px rgba(237,91,45,0.3)) brightness(1.3) !important; }
+
+  /* Theme toggle button */
+  .theme-toggle-btn {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--border-strong);
+    color: var(--text-strong);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.25s;
+  }
+  .theme-toggle-btn:hover { background: rgba(255,255,255,0.95); transform: translateY(-1px); }
+  .theme-toggle-btn .icon-moon { display: block; }
+  .theme-toggle-btn .icon-sun  { display: none; }
+  body.theme-dark .theme-toggle-btn {
+    background: rgba(255,255,255,0.06);
+    color: #fcc862;
+    border-color: rgba(255,255,255,0.12);
+  }
+  body.theme-dark .theme-toggle-btn:hover { background: rgba(255,255,255,0.12); }
+  body.theme-dark .theme-toggle-btn .icon-moon { display: none; }
+  body.theme-dark .theme-toggle-btn .icon-sun  { display: block; }
+
+  /* ── HERO ── */
+  #hero { background: var(--bg-hero) !important; }
+  #hero-canvas { opacity: 0.12; mix-blend-mode: multiply; }
+  body.theme-dark #hero { background: #080810 !important; }
+  body.theme-dark #hero-canvas { opacity: 1; mix-blend-mode: normal; }
+  body.theme-dark #particles-canvas { opacity: 1; }
+
+  #hero h1 { color: var(--text-strong) !important; }
+  #hero #hero-sub { color: var(--text-muted) !important; }
+  #hero #hero-sub strong { color: var(--text-strong) !important; }
+  #hero #hero-tag { color: var(--accent) !important; }
+  #hero #hero-tag .bg-nice { background: var(--accent) !important; }
+  #hero .text-white { color: var(--text-strong) !important; }
+  #hero .text-white\/50, #hero .text-white\/40 { color: var(--text-muted) !important; }
+  body.theme-dark #hero h1 { color: #fff !important; }
+  body.theme-dark #hero #hero-sub { color: rgba(255,255,255,0.5) !important; }
+  body.theme-dark #hero #hero-sub strong { color: rgba(255,255,255,0.8) !important; }
+  body.theme-dark #hero .text-white { color: #fff !important; }
+  body.theme-dark #hero .text-white\/50 { color: rgba(255,255,255,0.5) !important; }
+  body.theme-dark #hero .text-white\/40 { color: rgba(255,255,255,0.4) !important; }
+
+  /* hero logo image */
+  #hero-logo img { filter: none !important; }
+  body.theme-dark #hero-logo img { filter: drop-shadow(0 0 40px rgba(237,91,45,0.35)) brightness(1.4) contrast(1.1) !important; }
+
+  /* hero chips */
+  #hero-chips span { background: var(--accent-soft) !important; border-color: rgba(237,91,45,0.25) !important; color: var(--accent) !important; }
+  body.theme-dark #hero-chips span { background: rgba(237,91,45,0.1) !important; border-color: rgba(237,91,45,0.3) !important; color: rgba(237,91,45,0.9) !important; }
+
+  /* hero "ดูสินค้า" outlined CTA */
+  #hero-ctas a:not(.cta-btn) { color: var(--text-strong) !important; border: 1px solid var(--border-strong) !important; }
+  body.theme-dark #hero-ctas a:not(.cta-btn) { color: #fff !important; border-color: rgba(255,255,255,0.15) !important; }
+
+  /* hero partner logo chips */
+  #hero-partners > div { background: rgba(41,27,37,0.04) !important; border: 1px solid var(--border) !important; }
+  #hero-partners img { filter: none !important; }
+  #hero-partners span { color: var(--text-muted) !important; }
+  body.theme-dark #hero-partners > div { background: rgba(255,255,255,0.07) !important; border-color: rgba(255,255,255,0.1) !important; }
+  body.theme-dark #hero-partners img:first-of-type { filter: brightness(1.2) !important; }
+  body.theme-dark #hero-partners span { color: rgba(255,255,255,0.8) !important; }
+
+  /* hero stats strip */
+  #hero-stats { background: rgba(237,91,45,0.04) !important; border-color: rgba(237,91,45,0.15) !important; }
+  #hero-stats > div { border-color: rgba(237,91,45,0.15) !important; }
+  #hero-stats .text-white\/40 { color: var(--text-muted) !important; }
+  body.theme-dark #hero-stats { background: rgba(255,255,255,0.03) !important; border-color: rgba(237,91,45,0.2) !important; }
+  body.theme-dark #hero-stats > div { border-color: rgba(237,91,45,0.2) !important; }
+  body.theme-dark #hero-stats .text-white\/40 { color: rgba(255,255,255,0.4) !important; }
+
+  /* scroll cue */
+  #hero .bg-white\/30 { background: rgba(41,27,37,0.2) !important; }
+  body.theme-dark #hero .bg-white\/30 { background: rgba(255,255,255,0.3) !important; }
+
+  /* ── PRODUCTS section (cream) ── */
+  #products { background: var(--bg-cream) !important; }
+  body.theme-dark #products { background: var(--bg-soft) !important; color: var(--text-strong); }
+  body.theme-dark #products h2,
+  body.theme-dark #products h3 { color: #fff !important; }
+  body.theme-dark #products .text-dark { color: #fff !important; }
+  body.theme-dark #products .text-dark\/70, body.theme-dark #products strong.text-dark\/70 { color: rgba(255,255,255,0.78) !important; }
+  body.theme-dark #products .text-dark\/55 { color: rgba(255,255,255,0.6) !important; }
+  body.theme-dark #products .text-dark\/50 { color: rgba(255,255,255,0.55) !important; }
+  body.theme-dark #products .text-dark\/40 { color: rgba(255,255,255,0.45) !important; }
+  body.theme-dark #products .glass { background: rgba(255,255,255,0.04) !important; border-color: rgba(255,255,255,0.08) !important; }
+  body.theme-dark #products .product-card[style*="rgba(9,146,71"] { background: linear-gradient(135deg,rgba(9,146,71,0.12) 0%,rgba(255,255,255,0.03) 60%) !important; }
+
+  /* ── COVERAGE — already light; just tighten for dark mode ── */
+  #coverage { background: var(--bg-page) !important; }
+  body.theme-dark #coverage { background: var(--bg-soft) !important; }
+  body.theme-dark #coverage h2,
+  body.theme-dark #coverage .text-dark { color: #fff !important; }
+  body.theme-dark #coverage .text-dark\/55 { color: rgba(255,255,255,0.6) !important; }
+  body.theme-dark #coverage .text-dark\/80 { color: rgba(255,255,255,0.85) !important; }
+  body.theme-dark #coverage .text-dark\/50 { color: rgba(255,255,255,0.55) !important; }
+  body.theme-dark #coverage .text-dark\/40 { color: rgba(255,255,255,0.42) !important; }
+  body.theme-dark #coverage .glass { background: rgba(255,255,255,0.04) !important; border-color: rgba(255,255,255,0.08) !important; }
+
+  /* ── FLUID SCENE ── */
+  #fluid-scene { background: var(--bg-fluid) !important; }
+  body.theme-dark #fluid-scene { background: #08060a !important; }
+  #fluid-scene h2 { color: var(--text-strong) !important; }
+  #fluid-scene .text-white\/40, #fluid-scene .text-white\/50, #fluid-scene .text-white\/35 { color: var(--text-muted) !important; }
+  #fluid-scene .text-white\/85 { color: var(--text-body) !important; }
+  body.theme-dark #fluid-scene h2 { color: #fff !important; }
+  body.theme-dark #fluid-scene .text-white\/40 { color: rgba(255,255,255,0.4) !important; }
+  body.theme-dark #fluid-scene .text-white\/50 { color: rgba(255,255,255,0.5) !important; }
+  body.theme-dark #fluid-scene .text-white\/35 { color: rgba(255,255,255,0.35) !important; }
+  body.theme-dark #fluid-scene .text-white\/85 { color: rgba(255,255,255,0.85) !important; }
+  /* card titles inside fluid */
+  #fluid-scene .fluid-card .thai-head { color: var(--text-strong) !important; }
+  body.theme-dark #fluid-scene .fluid-card .thai-head { color: #fff !important; }
+
+  /* ── MARKET IMPACT ── */
+  #market-impact { background: var(--bg-impact) !important; }
+  body.theme-dark #market-impact { background: #040408 !important; }
+  #market-impact h2 { color: var(--text-strong) !important; }
+  #market-impact .text-white { color: var(--text-strong) !important; }
+  #market-impact .text-white\/40 { color: var(--text-muted) !important; }
+  #market-impact .text-white\/30 { color: var(--text-soft) !important; }
+  #market-impact .text-white\/20 { color: var(--text-faint) !important; }
+  #market-impact .impact-card { background: rgba(41,27,37,0.03) !important; border: 1px solid var(--border) !important; }
+  #market-impact .impact-card:hover { border-color: rgba(237,91,45,0.3) !important; }
+  body.theme-dark #market-impact h2 { color: #fff !important; }
+  body.theme-dark #market-impact .text-white { color: #fff !important; }
+  body.theme-dark #market-impact .text-white\/40 { color: rgba(255,255,255,0.4) !important; }
+  body.theme-dark #market-impact .text-white\/30 { color: rgba(255,255,255,0.3) !important; }
+  body.theme-dark #market-impact .text-white\/20 { color: rgba(255,255,255,0.2) !important; }
+  body.theme-dark #market-impact .impact-card { background: rgba(255,255,255,0.04) !important; border: 1px solid rgba(255,255,255,0.08) !important; }
+
+  /* ── TRUST ── (already light) */
+  #trust { background: var(--bg-page) !important; }
+  body.theme-dark #trust { background: var(--bg-soft) !important; }
+  body.theme-dark #trust h2, body.theme-dark #trust h3, body.theme-dark #trust h4,
+  body.theme-dark #trust .text-dark { color: #fff !important; }
+  body.theme-dark #trust .text-dark\/55 { color: rgba(255,255,255,0.6) !important; }
+  body.theme-dark #trust .text-dark\/80 { color: rgba(255,255,255,0.85) !important; }
+  body.theme-dark #trust .text-dark\/30 { color: rgba(255,255,255,0.3) !important; }
+  body.theme-dark #trust .glass { background: rgba(255,255,255,0.04) !important; border-color: rgba(255,255,255,0.08) !important; }
+
+  /* ── FOOTER ── */
+  #footer { background: var(--bg-footer) !important; }
+  body.theme-dark #footer { background: #08070d !important; }
+  /* keep footer text always light since bg is always dark */
+
+  /* glass card in light mode: real glass-white look */
+  .glass {
+    background: rgba(255,255,255,0.78) !important;
+    border: 1px solid rgba(255,255,255,0.9) !important;
+    box-shadow: 0 8px 32px rgba(41,27,37,0.06), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+  }
+  body.theme-dark .glass {
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3) !important;
+  }
+
+  /* scrollbar tweak for dark mode */
+  body.theme-dark ::-webkit-scrollbar-track { background: #15131a; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ FAB LINE ══════════════════════ -->
+<a href="https://line.me/ti/p/~@356csnbc" target="_blank" id="fab-line" aria-label="Line OA">
+  <span class="fab-tooltip">Line OA: @356csnbc</span>
+  <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+    <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.630 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+  </svg>
+</a>
+
+<!-- ══════════════════════ NAVBAR ══════════════════════ -->
+<nav id="navbar" class="px-6 py-4">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-3">
+      <!-- Transparent logo (white text on dark bg works naturally) -->
+      <img src="uploads/Nice 2nd BIG Trans.png" alt="Nice Center Oil" class="h-10 object-contain" style="filter:drop-shadow(0 0 12px rgba(237,91,45,0.3)) brightness(1.3);" />
+      <div class="hidden sm:block">
+        <div class="text-white font-black tracking-wider text-sm leading-none" style="font-family:'Outfit',sans-serif;">NICE CENTER</div>
+        <div class="text-xs font-medium tracking-widest" style="color:rgba(237,91,45,0.85);font-family:'Outfit',sans-serif;letter-spacing:0.15em;">OIL</div>
+      </div>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+      <a href="#coverage" class="nav-link">พื้นที่บริการ</a>
+      <a href="#products" class="nav-link">สินค้า</a>
+      <a href="#scrollytelling" class="nav-link">ทำไมต้องเรา</a>
+      <a href="#trust" class="nav-link">เกี่ยวกับเรา</a>
+      <a href="#footer" class="nav-link">ติดต่อ</a>
+    </div>
+    <!-- Theme toggle (Line OA pill removed — FAB at bottom-right is enough) -->
+    <button id="theme-toggle" aria-label="Toggle dark mode"
+      class="theme-toggle-btn" type="button">
+      <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden" style="background:#080810;">
+  <canvas id="hero-canvas"></canvas>
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Precision grid overlay -->
+  <div class="absolute inset-0 pointer-events-none" style="background-image:linear-gradient(rgba(237,91,45,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(237,91,45,0.04) 1px,transparent 1px);background-size:64px 64px;z-index:2;"></div>
+  <!-- Radial vignette -->
+  <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 40%,rgba(8,8,16,0.7) 100%);z-index:2;"></div>
+  <!-- Speed lines -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden" style="z-index:2;">
+    <div class="absolute top-1/3 left-0 right-0 h-px opacity-20" style="background:linear-gradient(90deg,transparent,#ed5b2d 30%,#ed5b2d 70%,transparent);"></div>
+    <div class="absolute top-2/3 left-0 right-0 h-px opacity-10" style="background:linear-gradient(90deg,transparent,#ed5b2d 30%,#ed5b2d 70%,transparent);"></div>
+  </div>
+
+  <div class="relative z-10 max-w-4xl mx-auto px-6 pt-28 pb-20 w-full text-center">
+    <div class="flex justify-center mb-8" id="hero-logo">
+      <img src="uploads/Nice 2nd BIG Trans.png" alt="Nice Center Oil" class="h-36 md:h-44 object-contain drop-shadow-2xl" style="filter:drop-shadow(0 0 40px rgba(237,91,45,0.35)) brightness(1.4) contrast(1.1);" />
+    </div>
+
+    <div id="hero-tag" class="inline-flex items-center gap-3 mb-6 text-xs font-semibold tracking-[0.25em] uppercase text-nice/80">
+      <span class="w-10 h-px bg-nice"></span>
+      ตัวแทนจำหน่ายอย่างเป็นทางการ · ประสบการณ์กว่า 20 ปี
+      <span class="w-10 h-px bg-nice"></span>
+    </div>
+
+    <h1 id="hero-h1" class="thai-head text-5xl md:text-7xl text-white mb-4" style="line-height:1.3;padding-bottom:8px;">
+      น้ำมันเครื่อง &amp; อะไหล่<br/>
+      <span style="background:linear-gradient(135deg,#ed5b2d 0%,#f5a04a 50%,#fcc862 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ยานยนต์มาตรฐานสากล</span>
+    </h1>
+
+    <p id="hero-sub" class="text-base md:text-lg text-white/50 leading-relaxed mb-5 max-w-2xl mx-auto" style="font-family:'Noto Sans Thai',sans-serif;">
+      หจก. ไนซ์ เซ็นเตอร์ ออยล์ ขับเคลื่อนธุรกิจคุณด้วยผลิตภัณฑ์หล่อลื่นและอะไหล่ยานยนต์มาตรฐานสากล เราคือตัวแทนจำหน่ายอย่างเป็นทางการที่ได้รับความไว้วางใจมานานกว่า <strong class="text-white/80">20 ปี</strong> พร้อมสต็อกสินค้าขนาดใหญ่และระบบจัดส่งที่แม่นยำ
+    </p>
+
+    <div id="hero-chips" class="flex flex-wrap gap-2 justify-center mb-8">
+      <span class="inline-flex items-center gap-1.5 text-xs font-semibold border rounded-full px-3 py-1.5" style="background:rgba(237,91,45,0.1);border-color:rgba(237,91,45,0.3);color:rgba(237,91,45,0.9);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        สินค้าแท้ 100% จากผู้ผลิต
+      </span>
+      <span class="inline-flex items-center gap-1.5 text-xs font-semibold border rounded-full px-3 py-1.5" style="background:rgba(237,91,45,0.1);border-color:rgba(237,91,45,0.3);color:rgba(237,91,45,0.9);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8zM5.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM18.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+        จัดส่งถึงหน้าร้านโดยทีมของเราเอง
+      </span>
+      <span class="inline-flex items-center gap-1.5 text-xs font-semibold border rounded-full px-3 py-1.5" style="background:rgba(237,91,45,0.1);border-color:rgba(237,91,45,0.3);color:rgba(237,91,45,0.9);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        ออกใบกำกับภาษีเต็มรูปแบบ
+      </span>
+      <span class="inline-flex items-center gap-1.5 text-xs font-semibold border rounded-full px-3 py-1.5" style="background:rgba(237,91,45,0.1);border-color:rgba(237,91,45,0.3);color:rgba(237,91,45,0.9);">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        ทีม DSR ประจำพื้นที่
+      </span>
+    </div>
+
+    <div id="hero-ctas" class="flex flex-wrap gap-4 justify-center mb-14">
+      <a href="https://line.me/ti/p/~@356csnbc" target="_blank"
+         class="cta-btn bg-nice text-white font-bold px-8 py-4 rounded-2xl text-base flex items-center gap-3 shadow-lg">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.630 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        ติดต่อฝ่ายขาย
+      </a>
+      <a href="#products" class="text-white font-semibold px-8 py-4 rounded-2xl text-base flex items-center gap-2 hover:text-nice transition-colors" style="border:1px solid rgba(255,255,255,0.15);">
+        ดูสินค้า
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- Partner logos -->
+    <div id="hero-partners" class="flex flex-wrap items-center justify-center gap-6 mb-14">
+      <div class="rounded-xl px-5 py-2.5 flex items-center justify-center h-12" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);">
+        <img src="uploads/Castrol_logo_2023.svg.png" alt="Castrol" class="h-6 object-contain" style="filter:brightness(1.2);" />
+      </div>
+      <div class="rounded-xl px-5 py-2.5 flex items-center justify-center h-12" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);">
+        <img src="uploads/Denso.png" alt="Denso" class="h-5 object-contain" style="filter:brightness(1.5);" />
+      </div>
+      <div class="rounded-xl px-5 py-2.5 flex items-center justify-center gap-2 h-12" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);">
+        <img src="uploads/Niterra.jpg" alt="Niterra" class="h-7 w-7 object-cover rounded-md" />
+        <span class="text-xs font-bold text-white/80 tracking-wider">NITERRA</span>
+      </div>
+      <div class="rounded-xl px-5 py-2.5 flex items-center justify-center gap-2 h-12" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);">
+        <img src="uploads/Mitsuboshi-2f6d7202.jpg" alt="Mitsuboshi" class="h-7 object-contain rounded" />
+        <span class="text-xs font-bold text-white/80 tracking-wider">MITSUBOSHI</span>
+      </div>
+    </div>
+
+    <!-- Stats strip -->
+    <div id="hero-stats" class="grid grid-cols-3 gap-0 max-w-lg mx-auto border rounded-2xl overflow-hidden" style="border-color:rgba(237,91,45,0.2);background:rgba(255,255,255,0.03);">
+      <div class="text-center py-5 px-4">
+        <div class="stat-num text-4xl" style="background:linear-gradient(135deg,#ed5b2d,#f5a04a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">20+</div>
+        <div class="text-xs text-white/40 mt-1 font-medium">ปีแห่งประสบการณ์</div>
+      </div>
+      <div class="text-center py-5 px-4" style="border-left:1px solid rgba(237,91,45,0.2);border-right:1px solid rgba(237,91,45,0.2);">
+        <div class="stat-num text-4xl" style="background:linear-gradient(135deg,#ed5b2d,#f5a04a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">6</div>
+        <div class="text-xs text-white/40 mt-1 font-medium">จังหวัดที่ให้บริการ</div>
+      </div>
+      <div class="text-center py-5 px-4">
+        <div class="stat-num text-4xl" style="background:linear-gradient(135deg,#ed5b2d,#f5a04a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">100%</div>
+        <div class="text-xs text-white/40 mt-1 font-medium">สินค้าแท้รับประกัน</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30" style="z-index:10;">
+    <span class="text-xs font-medium text-white tracking-widest uppercase">
+</span>
+    <div class="w-px h-10 bg-white/30 relative overflow-hidden">
+      <div class="absolute top-0 left-0 w-full bg-nice" style="height:40%;animation:scrollDown 1.6s ease-in-out infinite;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ COVERAGE ══════════════════════ -->
+<section id="coverage" class="py-24 px-6 bg-white relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-96 h-96 rounded-full opacity-5 pointer-events-none" style="background:radial-gradient(circle,#ed5b2d,transparent);transform:translate(30%,-30%);"></div>
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <span class="text-xs font-bold tracking-widest uppercase text-nice/80 flex items-center justify-center gap-2 mb-4">
+        <span class="w-6 h-px bg-nice"></span> พื้นที่บริการ <span class="w-6 h-px bg-nice"></span>
+      </span>
+      <h2 class="thai-head text-4xl md:text-5xl text-dark">ครอบคลุม <span class="grad-text">6 จังหวัด</span></h2>
+      <p class="text-dark/55 mt-4 text-lg max-w-2xl mx-auto" style="font-family:'Noto Sans Thai',sans-serif;line-height:1.9;">ศูนย์กระจายสินค้าหลักของเราตั้งอยู่ที่ อ.อู่ทอง จ.สุพรรณบุรี บนพื้นที่คลังสินค้าแห่งใหม่<br/>ระบบสต็อกทันสมัย พร้อมรองรับความต้องการของร้านค้าและอุตสาหกรรม ครอบคลุมภาคกลาง บริหารงานขายและดูแลพันธมิตรอย่างใกล้ชิดด้วยทีมผู้แทนขาย (DSR) ประจำพื้นที่</p>
+      <div class="flex flex-wrap justify-center gap-4 mt-8">
+        <div class="glass rounded-2xl px-5 py-3 flex items-center gap-3">
+          <div class="w-8 h-8 bg-nice/10 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          </div>
+          <div class="text-left"><div class="text-xs font-bold text-dark">คลังสินค้าแห่งใหม่</div><div class="text-xs text-dark/50">อู่ทอง สุพรรณบุรี</div></div>
+        </div>
+        <div class="glass rounded-2xl px-5 py-3 flex items-center gap-3">
+          <div class="w-8 h-8 bg-nice/10 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div class="text-left"><div class="text-xs font-bold text-dark">ทีม DSR ประจำพื้นที่</div><div class="text-xs text-dark/50">ดูแลใกล้ชิด Face-to-Face</div></div>
+        </div>
+        <div class="glass rounded-2xl px-5 py-3 flex items-center gap-3">
+          <div class="w-8 h-8 bg-nice/10 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8zM5.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM18.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+          </div>
+          <div class="text-left"><div class="text-xs font-bold text-dark">จัดส่งตามรอบประจำสัปดาห์</div><div class="text-xs text-dark/50">โดยทีมของเราเอง</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-12 gap-8 items-start">
+      <!-- ═══ MAP (left, 7 cols) ═══ -->
+      <div class="lg:col-span-7 relative reveal">
+        <div class="relative rounded-3xl p-5 md:p-7" style="background:linear-gradient(160deg, rgba(237,91,45,0.04) 0%, rgba(255,255,255,0.7) 60%);border:1px solid var(--border);box-shadow:0 12px 40px rgba(41,27,37,0.06);">
+
+          <!-- Map header strip -->
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2 text-xs font-bold tracking-[0.18em] uppercase" style="color:var(--accent);font-family:'Outfit',sans-serif;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/></svg>
+              Central Thailand
+            </div>
+            <div class="text-[10px] uppercase tracking-widest" style="color:var(--text-soft);font-family:'Outfit',sans-serif;">Click a province</div>
+          </div>
+
+          <!-- MAIN MAP -->
+          <div class="relative">
+            <svg id="map-main" viewBox="0 0 500 660" class="w-full" style="max-height:560px;display:block;">
+              <defs>
+                <filter id="provDrop"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <linearGradient id="hqGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#ed5b2d"/>
+                  <stop offset="100%" stop-color="#f5a04a"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Subtle compass / grid -->
+              <g opacity="0.45" pointer-events="none">
+                <line x1="0" y1="120" x2="500" y2="120" stroke="currentColor" stroke-opacity="0.04" stroke-dasharray="2 6"/>
+                <line x1="0" y1="280" x2="500" y2="280" stroke="currentColor" stroke-opacity="0.04" stroke-dasharray="2 6"/>
+                <line x1="0" y1="440" x2="500" y2="440" stroke="currentColor" stroke-opacity="0.04" stroke-dasharray="2 6"/>
+                <line x1="0" y1="600" x2="500" y2="600" stroke="currentColor" stroke-opacity="0.04" stroke-dasharray="2 6"/>
+              </g>
+
+              <!-- ── NEIGHBOR PROVINCES (greyed backdrops to anchor geography) ── -->
+              <g class="neighbors" pointer-events="none">
+                <!-- Tak / Kamphaeng Phet (NW of Nakhon Sawan) -->
+                <path class="neighbor" d="M 60,40 L 175,40 L 200,80 L 195,140 L 175,170 L 130,180 L 95,165 L 60,140 Z"/>
+                <text x="118" y="105" text-anchor="middle" font-size="10" font-family="Noto Sans Thai" fill="currentColor" fill-opacity="0.28">กำแพงเพชร</text>
+
+                <!-- Phetchabun / Lop Buri (NE / E) -->
+                <path class="neighbor" d="M 410,55 L 470,55 L 485,100 L 480,180 L 460,240 L 430,270 L 410,260 L 405,200 L 410,135 Z"/>
+                <text x="445" y="170" text-anchor="middle" font-size="10" font-family="Noto Sans Thai" fill="currentColor" fill-opacity="0.28">เพชรบูรณ์</text>
+
+                <!-- Lop Buri (east of Chai Nat / Ang Thong) -->
+                <path class="neighbor" d="M 400,295 L 460,290 L 480,340 L 475,400 L 450,440 L 420,445 L 400,420 Z"/>
+                <text x="437" y="375" text-anchor="middle" font-size="10" font-family="Noto Sans Thai" fill="currentColor" fill-opacity="0.28">ลพบุรี</text>
+
+                <!-- Ayutthaya (south of Ang Thong) -->
+                <path class="neighbor" d="M 380,495 L 460,490 L 475,530 L 465,570 L 410,580 L 380,560 Z"/>
+                <text x="425" y="540" text-anchor="middle" font-size="10" font-family="Noto Sans Thai" fill="currentColor" fill-opacity="0.28">อยุธยา</text>
+
+                <!-- Kanchanaburi (west of Suphan Buri) -->
+                <path class="neighbor" d="M 30,420 L 95,400 L 130,440 L 130,510 L 115,580 L 90,620 L 60,615 L 35,580 L 20,520 Z"/>
+                <text x="82" y="510" text-anchor="middle" font-size="10" font-family="Noto Sans Thai" fill="currentColor" fill-opacity="0.28">กาญจนบุรี</text>
+
+                <!-- Nakhon Pathom (south of Suphan) -->
+                <path class="neighbor" d="M 155,640 L 280,635 L 320,655 L 290,690 L 200,695 L 150,675 Z" opacity="0.6"/>
+                <text x="225" y="668" text-anchor="middle" font-size="10" font-family="Noto Sans Thai" fill="currentColor" fill-opacity="0.28">นครปฐม</text>
+              </g>
+
+              <!-- ── ACTIVE PROVINCES ── -->
+
+              <!-- NAKHON SAWAN (large, north) -->
+              <g class="prov-group" data-prov="นครสวรรค์">
+                <path class="prov-shape" d="M 200,60 L 240,52 L 295,48 L 350,55 L 395,75 L 410,115 L 405,160 L 390,195 L 360,215 L 320,225 L 295,242 L 270,250 L 245,238 L 220,225 L 200,205 L 188,170 L 182,125 L 188,85 Z"/>
+                <text class="prov-label-text" x="295" y="148" text-anchor="middle">นครสวรรค์</text>
+              </g>
+
+              <!-- UTHAI THANI (medium-large, west) -->
+              <g class="prov-group" data-prov="อุทัยธานี">
+                <path class="prov-shape" d="M 110,225 L 165,212 L 200,225 L 220,250 L 215,295 L 205,340 L 180,370 L 145,378 L 115,365 L 95,335 L 88,290 L 92,250 Z"/>
+                <text class="prov-label-text" x="155" y="300" text-anchor="middle">อุทัยธานี</text>
+              </g>
+
+              <!-- CHAI NAT (medium, east of Uthai Thani) -->
+              <g class="prov-group" data-prov="ชัยนาท">
+                <path class="prov-shape" d="M 225,255 L 268,248 L 305,255 L 340,272 L 358,300 L 348,332 L 318,348 L 285,346 L 252,335 L 230,315 L 222,285 Z"/>
+                <text class="prov-label-text" x="290" y="305" text-anchor="middle">ชัยนาท</text>
+              </g>
+
+              <!-- SING BURI (small, south of Chai Nat) -->
+              <g class="prov-group" data-prov="สิงห์บุรี">
+                <path class="prov-shape" d="M 285,360 L 332,355 L 365,372 L 372,400 L 358,422 L 325,428 L 295,420 L 280,395 Z"/>
+                <text class="prov-label-text" x="325" y="395" text-anchor="middle" font-size="11">สิงห์บุรี</text>
+              </g>
+
+              <!-- ANG THONG (small, south of Sing Buri) -->
+              <g class="prov-group" data-prov="อ่างทอง">
+                <path class="prov-shape" d="M 305,440 L 350,438 L 378,455 L 378,485 L 360,500 L 325,498 L 300,485 L 295,460 Z"/>
+                <text class="prov-label-text" x="338" y="473" text-anchor="middle" font-size="11">อ่างทอง</text>
+              </g>
+
+              <!-- SUPHAN BURI HQ (large, south-west) -->
+              <g class="prov-group" data-prov="สุพรรณบุรี">
+                <path class="prov-shape hq" d="M 140,455 L 200,445 L 260,448 L 295,475 L 305,510 L 315,548 L 305,590 L 280,625 L 245,640 L 205,640 L 165,628 L 140,600 L 130,555 L 128,510 Z"/>
+                <text class="prov-label-text" x="220" y="540" text-anchor="middle" font-size="13" font-weight="800" style="fill:#fff;stroke:rgba(0,0,0,0.5);stroke-width:3;">สุพรรณบุรี</text>
+                <text x="220" y="558" text-anchor="middle" font-size="9" font-family="Outfit" font-weight="900" fill="#fff" style="paint-order:stroke;stroke:rgba(0,0,0,0.5);stroke-width:2;letter-spacing:3px;pointer-events:none;">HQ</text>
+                <!-- HQ pin -->
+                <g pointer-events="none">
+                  <circle cx="220" cy="510" r="5" fill="#fff"/>
+                  <circle cx="220" cy="510" r="9" fill="none" stroke="#fff" stroke-width="1.5" stroke-opacity="0.7">
+                    <animate attributeName="r" values="6;14;6" dur="2s" repeatCount="indefinite"/>
+                    <animate attributeName="stroke-opacity" values="0.7;0;0.7" dur="2s" repeatCount="indefinite"/>
+                  </circle>
+                </g>
+              </g>
+
+              <!-- COMPASS -->
+              <g transform="translate(450,40)" pointer-events="none">
+                <circle r="20" fill="rgba(255,255,255,0.85)" stroke="rgba(237,91,45,0.3)" stroke-width="1"/>
+                <text x="0" y="-7" text-anchor="middle" font-size="8" font-family="Outfit" font-weight="900" fill="#ed5b2d">N</text>
+                <line x1="0" y1="-14" x2="0" y2="14" stroke="rgba(237,91,45,0.5)" stroke-width="1"/>
+                <line x1="-14" y1="0" x2="14" y2="0" stroke="rgba(237,91,45,0.5)" stroke-width="1"/>
+                <polygon points="0,-14 -3,-9 3,-9" fill="#ed5b2d"/>
+              </g>
+
+              <!-- SCALE BAR -->
+              <g transform="translate(40,628)" pointer-events="none">
+                <line x1="0" y1="0" x2="60" y2="0" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"/>
+                <line x1="0" y1="-3" x2="0" y2="3" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"/>
+                <line x1="60" y1="-3" x2="60" y2="3" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"/>
+                <text x="30" y="14" text-anchor="middle" font-size="9" font-family="Outfit" fill="currentColor" fill-opacity="0.45">~50 km</text>
+              </g>
+            </svg>
+
+            <!-- Thailand context mini-map (top-right inset) -->
+            <div class="absolute top-3 left-3 hidden md:block" style="width:80px;">
+              <svg viewBox="0 0 100 160" class="w-full" style="opacity:0.7;">
+                <path d="M 45,8 L 55,5 L 65,8 L 72,16 L 70,28 L 78,35 L 82,48 L 78,58 L 85,68 L 82,82 L 75,88 L 60,90 L 55,100 L 58,118 L 56,135 L 54,150 L 50,148 L 48,128 L 45,110 L 40,95 L 32,90 L 22,85 L 15,72 L 12,55 L 18,38 L 28,22 L 38,12 Z"
+                  fill="rgba(41,27,37,0.05)" stroke="rgba(41,27,37,0.25)" stroke-width="1"/>
+                <!-- Central region highlight -->
+                <rect x="38" y="55" width="22" height="22" fill="rgba(237,91,45,0.3)" stroke="#ed5b2d" stroke-width="1" rx="2"/>
+                <text x="50" y="158" text-anchor="middle" font-size="6" font-family="Outfit" fill="currentColor" fill-opacity="0.5">THAILAND</text>
+              </svg>
+            </div>
+
+            <!-- Bottom legend -->
+            <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-4 text-xs" style="color:var(--text-muted);font-family:'Noto Sans Thai',sans-serif;">
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3 h-3 rounded-sm" style="background:#ed5b2d;"></span>HQ / คลังสินค้า
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3 h-3 rounded-sm" style="background:rgba(237,91,45,0.18);border:1.4px solid rgba(237,91,45,0.5);"></span>DSR ประจำพื้นที่
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3 h-3 rounded-sm" style="background:rgba(41,27,37,0.05);border:1px solid rgba(41,27,37,0.15);"></span>จังหวัดข้างเคียง
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ DETAIL PANEL (right, 5 cols) ═══ -->
+      <div class="lg:col-span-5 reveal" style="transition-delay:0.15s">
+
+        <!-- Province quick selector chips -->
+        <div class="flex flex-wrap gap-2 mb-5" id="prov-chip-row">
+          <button data-prov="สุพรรณบุรี" class="prov-chip active">
+            <span class="dot"></span>สุพรรณบุรี
+            <span class="badge">HQ</span>
+          </button>
+          <button data-prov="สิงห์บุรี" class="prov-chip"><span class="dot"></span>สิงห์บุรี</button>
+          <button data-prov="อ่างทอง" class="prov-chip"><span class="dot"></span>อ่างทอง</button>
+          <button data-prov="อุทัยธานี" class="prov-chip"><span class="dot"></span>อุทัยธานี</button>
+          <button data-prov="ชัยนาท" class="prov-chip"><span class="dot"></span>ชัยนาท</button>
+          <button data-prov="นครสวรรค์" class="prov-chip"><span class="dot"></span>นครสวรรค์</button>
+        </div>
+
+        <!-- DETAIL PANEL -->
+        <div id="prov-detail-panel" class="rounded-3xl p-6 md:p-7" style="background:var(--bg-elev);border:1px solid var(--border);box-shadow:0 10px 36px rgba(41,27,37,0.06);">
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <div>
+              <div class="text-xs font-bold tracking-[0.2em] uppercase mb-1" style="color:var(--accent);font-family:'Outfit',sans-serif;" id="pd-region">ภาคกลาง</div>
+              <h3 class="thai-head text-3xl md:text-4xl" id="pd-name" style="color:var(--text-strong);">สุพรรณบุรี</h3>
+            </div>
+            <div class="text-right">
+              <span id="pd-badge" class="inline-block text-xs font-bold px-3 py-1 rounded-full" style="background:var(--accent);color:#fff;">HQ &amp; ศูนย์กระจายสินค้า</span>
+            </div>
+          </div>
+
+          <!-- Address / address note -->
+          <div id="pd-address" class="flex items-start gap-2 mb-5 text-sm" style="color:var(--text-muted);font-family:'Noto Sans Thai',sans-serif;">
+            <svg class="flex-shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span id="pd-address-text">212 ม.5 ซ.สำนักเกษตร ต.อู่ทอง อ.อู่ทอง จ.สุพรรณบุรี 72160</span>
+          </div>
+
+          <!-- Stats row -->
+          <div class="grid grid-cols-3 gap-3 mb-6" id="pd-stats">
+            <div class="rounded-xl p-3 text-center" style="background:rgba(237,91,45,0.06);">
+              <div class="stat-num text-2xl grad-text" id="pd-amphoe">10</div>
+              <div class="text-[10px] tracking-widest uppercase mt-0.5" style="color:var(--text-soft);font-family:'Outfit',sans-serif;">อำเภอ</div>
+            </div>
+            <div class="rounded-xl p-3 text-center" style="background:rgba(237,91,45,0.06);">
+              <div class="stat-num text-2xl grad-text" id="pd-area">5,358</div>
+              <div class="text-[10px] tracking-widest uppercase mt-0.5" style="color:var(--text-soft);font-family:'Outfit',sans-serif;">km²</div>
+            </div>
+            <div class="rounded-xl p-3 text-center" style="background:rgba(237,91,45,0.06);">
+              <div class="stat-num text-2xl grad-text" id="pd-pop">847K</div>
+              <div class="text-[10px] tracking-widest uppercase mt-0.5" style="color:var(--text-soft);font-family:'Outfit',sans-serif;">ประชากร</div>
+            </div>
+          </div>
+
+          <!-- District list -->
+          <div class="flex items-center gap-2 mb-3">
+            <div class="text-xs font-bold tracking-widest uppercase" style="color:var(--text-strong);font-family:'Outfit',sans-serif;">อำเภอที่ให้บริการ</div>
+            <div class="flex-1 h-px" style="background:var(--border);"></div>
+            <span id="pd-count" class="text-xs font-semibold" style="color:var(--text-soft);font-family:'Outfit',sans-serif;">10</span>
+          </div>
+          <div id="pd-districts" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <!-- Team Structure mini-card -->
+        <div class="mt-5 glass rounded-2xl p-5 flex items-start gap-4">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(237,91,45,0.10);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div>
+            <div class="font-bold mb-1" style="color:var(--text-strong);">โครงสร้างทีมงานครบวงจร</div>
+            <div class="text-sm" style="color:var(--text-muted);line-height:1.9;font-family:'Noto Sans Thai',sans-serif;">
+              <span style="color:var(--text-strong);font-weight:600;">Admin</span> ซัพพอร์ต · <span style="color:var(--text-strong);font-weight:600;">DSR</span> ดูแลหน้างาน · <span style="color:var(--text-strong);font-weight:600;">ทีมขนส่งของบริษัทเอง</span> จัดส่งตามรอบสัปดาห์
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ PRODUCTS ══════════════════════ -->
+<section id="products" class="py-24 px-6" style="background:#f6f6e9;">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <span class="text-xs font-bold tracking-widest uppercase text-nice/80 flex items-center justify-center gap-2 mb-4">
+        <span class="w-6 h-px bg-nice"></span> สินค้าของเรา <span class="w-6 h-px bg-nice"></span>
+      </span>
+      <h2 class="thai-head text-4xl md:text-5xl text-dark">สินค้าคุณภาพจาก <span class="grad-text">แบรนด์ชั้นนำ</span></h2>
+      <p class="text-dark/50 mt-4 text-lg" style="font-family:'Noto Sans Thai',sans-serif;">รับประกันสินค้าแท้ทุกชิ้น จากตัวแทนจำหน่ายอย่างเป็นทางการ</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Castrol -->
+      <div class="product-card rounded-3xl p-6 relative overflow-hidden reveal md:col-span-2 lg:col-span-2" style="transition-delay:0s;background:linear-gradient(135deg,rgba(9,146,71,0.07) 0%,rgba(255,255,255,0.85) 60%);backdrop-filter:blur(20px);border:1.5px solid rgba(9,146,71,0.25);box-shadow:0 8px 40px rgba(9,146,71,0.1);">
+        <div class="absolute top-0 left-0 right-0 h-1 rounded-t-3xl" style="background:linear-gradient(90deg,#099247,#0bb857);"></div>
+        <div class="flex flex-col md:flex-row gap-6 items-start">
+          <div class="flex-shrink-0">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background:rgba(9,146,71,0.1);">
+              <img src="uploads/Castrol.gif" alt="Castrol" class="w-12 h-12 object-contain rounded-xl" />
+            </div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="text-xs font-bold tracking-widest uppercase text-castrol/70">Castrol</div>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-full" style="background:#099247;color:white;">★ Primary Authorized Distributor</span>
+            </div>
+            <h3 class="thai-head text-2xl text-dark mb-2">น้ำมันเครื่อง — สินค้าหลัก</h3>
+            <p class="text-sm text-dark/55 leading-relaxed mb-3">น้ำมันเครื่องคุณภาพสูงสำหรับ<strong class="text-dark/70">รถเก๋ง รถกระบะ รถบรรทุก</strong> และน้ำมันหล่อลื่นสำหรับโรงงานอุตสาหกรรม ครอบคลุมทุกขนาดเครื่องยนต์</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Magnatec</span>
+              <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Edge</span>
+              <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">GTX</span>
+              <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Vecton (Diesel)</span>
+              <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Power1 Ultimate</span>
+              <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Power1</span>
+              <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">ACTIV</span>
+              <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">ACTIV Essential</span>
+              <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Go! 2T</span>
+
+            </div>
+          </div>
+        </div>
+        <div class="absolute -bottom-8 -right-8 w-32 h-32 rounded-full opacity-8" style="background:#099247;"></div>
+      </div>
+
+      <!-- Denso -->
+      <div class="product-card glass rounded-3xl p-6 relative overflow-hidden reveal" style="transition-delay:0.1s">
+        <div class="card-shine"></div>
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(238,1,34,0.08);">
+          <img src="uploads/Denso.png" alt="Denso" class="w-10 h-8 object-contain" />
+        </div>
+        <div class="text-xs font-bold tracking-widest uppercase mb-2" style="color:rgba(238,1,34,0.7);">DENSO</div>
+        <h3 class="thai-head text-xl text-dark mb-3">อะไหล่แท้ OEM</h3>
+        <p class="text-sm text-dark/55 leading-relaxed mb-3">อะไหล่แท้มาตรฐาน OEM อาทิ <strong class="text-dark/70">ไส้กรองน้ำมันเครื่อง</strong> และ <strong class="text-dark/70">หัวเทียนมอเตอร์ไซค์</strong> คุณภาพมาตรฐานญี่ปุ่น</p>
+        <div class="flex flex-wrap gap-1 mb-4">
+          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(238,1,34,0.06);color:rgba(238,1,34,0.8);border-color:rgba(238,1,34,0.15);">ไส้กรองน้ำมันเครื่อง</span>
+          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(238,1,34,0.06);color:rgba(238,1,34,0.8);border-color:rgba(238,1,34,0.15);">หัวเทียนมอเตอร์ไซค์</span>
+        </div>
+        <div class="sep my-4 opacity-30"></div>
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-dark/40 font-medium">ตัวแทนทางการ</span>
+          <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background:rgba(238,1,34,0.1);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ee0122" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+        <div class="absolute -bottom-6 -right-6 w-24 h-24 rounded-full opacity-8" style="background:#ee0122;"></div>
+      </div>
+
+      <!-- Niterra/NGK -->
+      <div class="product-card glass rounded-3xl p-6 relative overflow-hidden reveal" style="transition-delay:0.2s">
+        <div class="card-shine"></div>
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(0,140,145,0.1);">
+          <img src="uploads/Niterra.jpg" alt="Niterra" class="w-10 h-10 object-cover rounded-xl" />
+        </div>
+        <div class="text-xs font-bold tracking-widest uppercase mb-2" style="color:rgba(0,140,145,0.8);">NITERRA / NGK</div>
+        <h3 class="thai-head text-xl text-dark mb-3">หัวเทียน &amp; สายพาน</h3>
+        <p class="text-sm text-dark/55 leading-relaxed mb-3">หัวเทียนประสิทธิภาพสูงสำหรับ<strong class="text-dark/70">รถยนต์และมอเตอร์ไซค์</strong> พร้อม <strong class="text-dark/70">สายพาน Mitsuboshi</strong> ที่ช่างมืออาชีพแนะนำ</p>
+        <div class="flex flex-wrap gap-1 mb-4">
+          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(0,140,145,0.06);color:rgba(0,140,145,0.9);border-color:rgba(0,140,145,0.15);">Iridium</span>
+          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(0,140,145,0.06);color:rgba(0,140,145,0.9);border-color:rgba(0,140,145,0.15);">GP Platinum</span>
+          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(0,140,145,0.06);color:rgba(0,140,145,0.9);border-color:rgba(0,140,145,0.15);">Standard</span>
+          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(0,140,145,0.06);color:rgba(0,140,145,0.9);border-color:rgba(0,140,145,0.15);">Mitsuboshi Belt</span>
+        </div>
+        <div class="sep my-4 opacity-30"></div>
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-dark/40 font-medium">ตัวแทนทางการ</span>
+          <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background:rgba(0,140,145,0.1);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#008c91" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+        <div class="absolute -bottom-6 -right-6 w-24 h-24 rounded-full opacity-8" style="background:#008c91;"></div>
+      </div>
+    </div>
+
+    <!-- CTA strip -->
+  </div>
+</section>
+
+<!-- ══════════════════════ SCROLLYTELLING — PRODUCT SHOWCASE ══════════════════════ -->
+<div id="scrollytelling">
+
+  <div class="story-section" id="story-fluid" style="height:280vh;">
+    <div id="fluid-scene">
+      <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 80% at 50% 20%, rgba(252,200,98,0.06) 0%, transparent 60%);"></div>
+      <!-- header -->
+      <div class="absolute top-12 left-0 right-0 text-center pointer-events-none px-6" style="z-index:3;">
+        <div class="text-xs font-bold tracking-[0.25em] uppercase mb-3" style="color:rgba(252,200,98,0.7);font-family:'Outfit',sans-serif;">— Full Synthetic Technology —</div>
+        <h2 class="thai-head text-4xl md:text-5xl" style="color:var(--fluid-h, #fff);">น้ำมันสังเคราะห์ <span style="color:#fcc862;">100%</span></h2>
+        <p class="text-white/40 mt-2 text-sm md:text-base" style="font-family:'Noto Sans Thai',sans-serif;">ครอบคลุมทั้งรถยนต์และมอเตอร์ไซค์</p>
+      </div>
+
+      <!-- TWO BOTTLES SIDE-BY-SIDE -->
+      <div class="relative w-full max-w-5xl px-6" style="z-index:2;">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 mt-24">
+
+          <!-- CAR -->
+          <div id="fluid-card-car" class="fluid-card relative rounded-3xl p-8 md:p-10 overflow-hidden" style="background:linear-gradient(155deg, rgba(9,146,71,0.18) 0%, rgba(9,146,71,0.04) 60%, transparent 100%);border:1px solid rgba(9,146,71,0.35);backdrop-filter:blur(8px);">
+            <div class="flex items-center gap-2 mb-1 text-xs font-bold tracking-[0.22em] uppercase" style="color:rgba(11,184,87,0.9);font-family:'Outfit',sans-serif;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 16H9m10 0h3v-3.15a1 1 0 00-.84-.99L16 11l-2.7-3.6a1 1 0 00-.8-.4H5.24a2 2 0 00-1.8 1.1l-.8 1.63A6 6 0 002 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>
+              For Cars
+            </div>
+            <div class="flex items-end justify-between mb-6">
+              <div>
+                <div class="thai-head text-2xl md:text-3xl" style="color:#fff;">สังเคราะห์ <span style="color:#0bb857;">100%</span></div>
+                <div class="text-white/50 text-sm mt-1" style="font-family:'Noto Sans Thai',sans-serif;">สำหรับรถเก๋ง รถกระบะ รถบรรทุก</div>
+              </div>
+              <!-- mini bottle -->
+              <svg viewBox="0 0 80 180" style="width:62px;" fill="none" class="fluid-bottle" id="bottle-car">
+                <rect x="15" y="42" width="50" height="125" rx="10" fill="#099247"/>
+                <rect x="15" y="42" width="50" height="125" rx="10" fill="url(#bottleHL1)" opacity="0.4"/>
+                <defs>
+                  <linearGradient id="bottleHL1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="white" stop-opacity="0.4"/>
+                    <stop offset="50%" stop-color="white" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <rect x="22" y="22" width="36" height="24" rx="5" fill="#065c2e"/>
+                <rect x="30" y="14" width="20" height="12" rx="4" fill="#044a24"/>
+                <rect x="20" y="68" width="40" height="78" rx="4" fill="white" fill-opacity="0.12"/>
+                <text x="40" y="94" text-anchor="middle" font-size="7" fill="white" font-family="Outfit" font-weight="900" letter-spacing="1">CASTROL</text>
+                <text x="40" y="112" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.7)" font-family="Outfit">SYNTHETIC</text>
+              </svg>
+            </div>
+
+            <!-- product chips -->
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="px-3 py-1.5 rounded-full text-sm font-black tracking-wider" style="font-family:'Outfit',sans-serif;background:rgba(11,184,87,0.18);color:#0bb857;border:1px solid rgba(11,184,87,0.35);">EDGE</span>
+              <span class="px-3 py-1.5 rounded-full text-sm font-black tracking-wider" style="font-family:'Outfit',sans-serif;background:rgba(11,184,87,0.18);color:#0bb857;border:1px solid rgba(11,184,87,0.35);">MAGNATEC</span>
+              <span class="px-3 py-1.5 rounded-full text-sm font-black tracking-wider" style="font-family:'Outfit',sans-serif;background:rgba(11,184,87,0.18);color:#0bb857;border:1px solid rgba(11,184,87,0.35);">GTX</span>
+            </div>
+
+            <div class="sep my-4 opacity-30"></div>
+            <div class="text-xs uppercase tracking-widest mb-1 text-white/40" style="font-family:'Outfit',sans-serif;">เทคโนโลยีสังเคราะห์</div>
+            <div class="text-white/85 text-base" style="font-family:'Noto Sans Thai',sans-serif;">MAGNATEC · GTX</div>
+            <div class="absolute -bottom-12 -right-12 w-44 h-44 rounded-full pointer-events-none" style="background:radial-gradient(circle,#099247 0%,transparent 70%);opacity:0.18;"></div>
+          </div>
+
+          <!-- MOTORCYCLE -->
+          <div id="fluid-card-bike" class="fluid-card relative rounded-3xl p-8 md:p-10 overflow-hidden" style="background:linear-gradient(155deg, rgba(237,91,45,0.18) 0%, rgba(237,91,45,0.04) 60%, transparent 100%);border:1px solid rgba(237,91,45,0.35);backdrop-filter:blur(8px);">
+            <div class="flex items-center gap-2 mb-1 text-xs font-bold tracking-[0.22em] uppercase" style="color:rgba(237,91,45,0.9);font-family:'Outfit',sans-serif;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M14 17h-3l-2-9h5l1 4 4 5"/></svg>
+              For Motorcycles
+            </div>
+            <div class="flex items-end justify-between mb-6">
+              <div>
+                <div class="thai-head text-2xl md:text-3xl" style="color:#fff;">สังเคราะห์ <span style="color:#ed5b2d;">100%</span></div>
+                <div class="text-white/50 text-sm mt-1" style="font-family:'Noto Sans Thai',sans-serif;">สำหรับรถจักรยานยนต์ทุกรุ่น</div>
+              </div>
+              <!-- mini bottle -->
+              <svg viewBox="0 0 80 180" style="width:62px;" fill="none" class="fluid-bottle" id="bottle-bike">
+                <rect x="15" y="42" width="50" height="125" rx="10" fill="#ed5b2d"/>
+                <rect x="15" y="42" width="50" height="125" rx="10" fill="url(#bottleHL2)" opacity="0.4"/>
+                <defs>
+                  <linearGradient id="bottleHL2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="white" stop-opacity="0.4"/>
+                    <stop offset="50%" stop-color="white" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <rect x="22" y="22" width="36" height="24" rx="5" fill="#291b25"/>
+                <rect x="30" y="14" width="20" height="12" rx="4" fill="#1a0f17"/>
+                <rect x="20" y="68" width="40" height="78" rx="4" fill="white" fill-opacity="0.12"/>
+                <text x="40" y="94" text-anchor="middle" font-size="7" fill="white" font-family="Outfit" font-weight="900" letter-spacing="1">CASTROL</text>
+                <text x="40" y="112" text-anchor="middle" font-size="5" fill="rgba(255,255,255,0.85)" font-family="Outfit">POWER1</text>
+              </svg>
+            </div>
+
+            <!-- product chips -->
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="px-3 py-1.5 rounded-full text-sm font-black tracking-wider" style="font-family:'Outfit',sans-serif;background:rgba(237,91,45,0.18);color:#ed5b2d;border:1px solid rgba(237,91,45,0.35);">POWER1 ULTIMATE</span>
+            </div>
+
+            <div class="sep my-4 opacity-30"></div>
+            <div class="text-xs uppercase tracking-widest mb-1 text-white/40" style="font-family:'Outfit',sans-serif;">เทคโนโลยีสังเคราะห์</div>
+            <div class="text-white/85 text-base" style="font-family:'Noto Sans Thai',sans-serif;">POWER1 · ACTIV</div>
+            <div class="absolute -bottom-12 -right-12 w-44 h-44 rounded-full pointer-events-none" style="background:radial-gradient(circle,#ed5b2d 0%,transparent 70%);opacity:0.18;"></div>
+          </div>
+
+        </div>
+
+        <!-- bottom note -->
+        <div id="fluid-foot" class="text-center mt-10 text-xs uppercase tracking-[0.25em] text-white/35" style="font-family:'Outfit',sans-serif;">
+          Castrol Official Distributor · ตัวแทนจำหน่ายอย่างเป็นทางการ
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end scrollytelling -->
+
+<!-- ══════════════════════ MARKET IMPACT ══════════════════════ -->
+<section id="market-impact" class="py-24 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <span class="text-xs font-bold tracking-widest uppercase flex items-center justify-center gap-2 mb-4" style="color:rgba(237,91,45,0.6);font-family:'Outfit',sans-serif;">
+        <span class="w-6 h-px bg-nice"></span> ผลกระทบต่อตลาด <span class="w-6 h-px bg-nice"></span>
+      </span>
+      <h2 class="thai-head text-4xl md:text-5xl text-white">ลูกค้าที่ไว้วางใจเรา</h2>
+      <p class="text-white/40 mt-4 text-lg" style="font-family:'Noto Sans Thai',sans-serif;">เครือข่ายคู่ค้าในปัจจุบันที่ดำเนินธุรกิจร่วมกับ Nice Center Oil</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      <!-- Castrol Auto Service -->
+      <div class="impact-card p-6 reveal" style="transition-delay:0s;">
+        <!-- Placeholder image -->
+        <div class="w-full h-32 rounded-xl mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(9,146,71,0.2),rgba(9,146,71,0.05));border:1px solid rgba(9,146,71,0.2);">
+          <div class="text-center">
+            <img src="uploads/Castrol_logo_2023.svg.png" alt="Castrol Auto Service" class="h-8 object-contain mx-auto mb-2 opacity-70"/>
+            <div class="text-xs text-white/30" style="font-family:'Outfit',sans-serif;">Auto Service</div>
+          </div>
+        </div>
+        <div class="stat-num text-5xl mb-1" style="background:linear-gradient(135deg,#ed5b2d,#fcc862);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">120+</div>
+        <div class="thai-head text-lg text-white mb-1">Castrol Auto Service</div>
+        <div class="text-white/40 text-sm" style="font-family:'Noto Sans Thai',sans-serif;">ร้านบริการยานยนต์คู่ค้า</div>
+      </div>
+
+      <!-- Castrol Bike Point -->
+      <div class="impact-card p-6 reveal" style="transition-delay:0.1s;">
+        <div class="w-full h-32 rounded-xl mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(9,146,71,0.2),rgba(9,146,71,0.05));border:1px solid rgba(9,146,71,0.2);">
+          <div class="text-center">
+            <img src="uploads/Castrol_logo_2023.svg.png" alt="Castrol Bike Point" class="h-8 object-contain mx-auto mb-2 opacity-70"/>
+            <div class="text-xs text-white/30" style="font-family:'Outfit',sans-serif;">Bike Point</div>
+          </div>
+        </div>
+        <div class="stat-num text-5xl mb-1" style="background:linear-gradient(135deg,#ed5b2d,#fcc862);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">150+</div>
+        <div class="thai-head text-lg text-white mb-1">Castrol Bike Point</div>
+        <div class="text-white/40 text-sm" style="font-family:'Noto Sans Thai',sans-serif;">ร้านซ่อมรถจักรยานยนต์คู่ค้า</div>
+      </div>
+
+      <!-- MCO -->
+      <div class="impact-card p-6 reveal" style="transition-delay:0.2s;">
+        <div class="w-full h-32 rounded-xl mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(237,91,45,0.15),rgba(237,91,45,0.03));border:1px solid rgba(237,91,45,0.15);">
+          <div class="text-center">
+            <div class="text-2xl font-black text-white/20" style="font-family:'Outfit',sans-serif;">MCO</div>
+            <div class="text-xs text-white/20 mt-1" style="font-family:'Outfit',sans-serif;">Motor & Car Oil</div>
+          </div>
+        </div>
+        <div class="stat-num text-5xl mb-1" style="background:linear-gradient(135deg,#ed5b2d,#fcc862);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">100+</div>
+        <div class="thai-head text-lg text-white mb-1">MCO</div>
+        <div class="text-white/40 text-sm" style="font-family:'Noto Sans Thai',sans-serif;">ร้านค้าน้ำมันเครื่องคู่ค้า</div>
+      </div>
+
+      <!-- PCO -->
+      <div class="impact-card p-6 reveal" style="transition-delay:0.3s;">
+        <div class="w-full h-32 rounded-xl mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(252,200,98,0.15),rgba(252,200,98,0.03));border:1px solid rgba(252,200,98,0.15);">
+          <div class="text-center">
+            <div class="text-2xl font-black text-white/20" style="font-family:'Outfit',sans-serif;">PCO</div>
+            <div class="text-xs text-white/20 mt-1" style="font-family:'Outfit',sans-serif;">Premium Car Oil</div>
+          </div>
+        </div>
+        <div class="stat-num text-5xl mb-1" style="background:linear-gradient(135deg,#ed5b2d,#fcc862);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">40+</div>
+        <div class="thai-head text-lg text-white mb-1">PCO</div>
+        <div class="text-white/40 text-sm" style="font-family:'Noto Sans Thai',sans-serif;">ร้านค้าน้ำมันพรีเมียมคู่ค้า</div>
+      </div>
+    </div>
+
+    <!-- CTA Contact in dark section -->
+  </div>
+</section>
+
+<!-- ══════════════════════ TRUST ══════════════════════ -->
+<section id="trust" class="py-24 px-6 bg-white relative overflow-hidden">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div class="reveal">
+        <span class="text-xs font-bold tracking-widest uppercase text-nice/80 flex items-center gap-2 mb-6">
+          <span class="w-6 h-px bg-nice"></span> เกี่ยวกับเรา
+        </span>
+        <h2 class="thai-head text-4xl md:text-5xl text-dark mb-4">ไว้วางใจโดย<br/><span class="grad-text">คู่ค้าทั่วภาคกลาง</span></h2>
+        <p class="text-dark/55 leading-relaxed mb-6" style="font-family:'Noto Sans Thai',sans-serif;">รองรับลูกค้าทั้งรายย่อยและโปรเจกต์ระดับจังหวัด ด้วยระบบการดำเนินงานที่มีมาตรฐานองค์กรครบวงจร</p>
+
+        <div class="space-y-3 mb-8">
+          <div class="flex items-start gap-3 glass rounded-2xl p-4">
+            <div class="w-8 h-8 bg-nice/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+              <div class="font-bold text-dark text-sm">100% Authentic</div>
+              <div class="text-sm text-dark/55 mt-0.5" style="font-family:'Noto Sans Thai',sans-serif;">การันตีสินค้าแท้ทุกชิ้น ส่งตรงจากบริษัทผู้ผลิต ไม่ผ่านคนกลาง</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 glass rounded-2xl p-4">
+            <div class="w-8 h-8 bg-nice/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div>
+              <div class="font-bold text-dark text-sm">Professional Operation</div>
+              <div class="text-sm text-dark/55 mt-0.5" style="font-family:'Noto Sans Thai',sans-serif;">ทีม Admin ซัพพอร์ต · DSR ให้คำปรึกษา · ทีมขนส่งของบริษัทเองจัดส่งตามรอบสัปดาห์</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 glass rounded-2xl p-4">
+            <div class="w-8 h-8 bg-nice/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div>
+              <div class="font-bold text-dark text-sm">Corporate Standard</div>
+              <div class="text-sm text-dark/55 mt-0.5" style="font-family:'Noto Sans Thai',sans-serif;">รองรับลูกค้าทั้งรายย่อยและโปรเจกต์ระดับจังหวัด พร้อมออกใบกำกับภาษีเต็มรูปแบบ</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 mb-10">
+          <div class="glass rounded-2xl p-6">
+            <div class="stat-num text-5xl grad-text counter" data-target="20">0</div>
+            <div class="text-nice font-bold text-lg">+ ปี</div>
+            <div class="text-sm text-dark/55 mt-1">ดำเนินธุรกิจมายาวนาน</div>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <div class="stat-num text-5xl grad-text counter" data-target="6">0</div>
+            <div class="text-nice font-bold text-lg">จังหวัด</div>
+            <div class="text-sm text-dark/55 mt-1">พื้นที่ให้บริการ</div>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <div class="stat-num text-5xl grad-text">100%</div>
+            <div class="text-nice font-bold text-lg">&nbsp;</div>
+            <div class="text-sm text-dark/55 mt-1">สินค้าแท้รับประกัน</div>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <div class="stat-num text-5xl grad-text counter" data-target="4">0</div>
+            <div class="text-nice font-bold text-lg">แบรนด์</div>
+            <div class="text-sm text-dark/55 mt-1">พันธมิตรชั้นนำ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" style="transition-delay:0.2s">
+        <div class="space-y-6">
+          <div class="flex gap-5 items-start">
+            <div class="flex-shrink-0 w-12 h-12 bg-nice/10 rounded-2xl flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            </div>
+            <div>
+              <h4 class="thai-head text-lg text-dark">คลังสินค้าใหม่ อู่ทอง สุพรรณบุรี</h4>
+              <p class="text-dark/55 text-sm mt-1 leading-relaxed" style="font-family:'Noto Sans Thai',sans-serif;">ศูนย์ปฏิบัติการและคลังสินค้าขนาดใหญ่ รองรับสต็อกสินค้าจำนวนมาก พร้อมระบบจัดการที่ทันสมัย</p>
+            </div>
+          </div>
+          <div class="w-px h-6 bg-nice/20 ml-6"></div>
+          <div class="flex gap-5 items-start">
+            <div class="flex-shrink-0 w-12 h-12 bg-nice/10 rounded-2xl flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div>
+              <h4 class="thai-head text-lg text-dark">ทีมงานคุณภาพ DSR</h4>
+              <p class="text-dark/55 text-sm mt-1 leading-relaxed" style="font-family:'Noto Sans Thai',sans-serif;">แอดมิน DSR (Distributor Sales Representative) และทีมจัดส่งของตัวเอง ดูแลลูกค้าแบบ Face-to-Face</p>
+            </div>
+          </div>
+          <div class="w-px h-6 bg-nice/20 ml-6"></div>
+          <div class="flex gap-5 items-start">
+            <div class="flex-shrink-0 w-12 h-12 bg-nice/10 rounded-2xl flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+              <h4 class="thai-head text-lg text-dark">ตัวแทนอย่างเป็นทางการ</h4>
+              <p class="text-dark/55 text-sm mt-1 leading-relaxed" style="font-family:'Noto Sans Thai',sans-serif;">ได้รับการแต่งตั้งอย่างเป็นทางการจาก Castrol, Denso, Niterra/NGK และ Mitsuboshi</p>
+            </div>
+          </div>
+          <div class="w-px h-6 bg-nice/20 ml-6"></div>
+          <div class="flex gap-5 items-start">
+            <div class="flex-shrink-0 w-12 h-12 bg-nice/10 rounded-2xl flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8zM5.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM18.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
+            </div>
+            <div>
+              <h4 class="thai-head text-lg text-dark">จัดส่งตามรอบประจำสัปดาห์</h4>
+              <p class="text-dark/55 text-sm mt-1 leading-relaxed" style="font-family:'Noto Sans Thai',sans-serif;">ทีมจัดส่งของตัวเอง ครอบคลุม 6 จังหวัดภาคกลาง</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Partner logos strip -->
+    <div class="mt-20 reveal">
+
+      <!-- CTA ย้ายมาจาก Market Impact -->
+      <div class="glass rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 mb-12 reveal">
+        <div>
+          <h3 class="thai-head text-2xl text-dark">พร้อมเป็นคู่ค้ากับเรา?</h3>
+          <p class="text-dark/55 mt-1" style="font-family:'Noto Sans Thai',sans-serif;">ติดต่อทีมงานของเราเพื่อเริ่มต้นความร่วมมือทางธุรกิจ</p>
+        </div>
+        <div class="flex flex-wrap gap-4 flex-shrink-0">
+          <a href="tel:0632029333" class="cta-btn glass text-dark font-semibold px-6 py-3 rounded-2xl flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3" ry="3"/><circle cx="12" cy="18" r="1" fill="currentColor" stroke="none"/><line x1="9" y1="5" x2="15" y2="5"/></svg>
+            063-202-9333
+          </a>
+          <a href="https://line.me/ti/p/~@356csnbc" target="_blank" class="line-pill" style="font-size:0.9rem;padding:10px 20px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.630 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+            Line OA: @356csnbc
+          </a>
+        </div>
+      </div>
+      <div class="text-center text-xs font-bold tracking-widest uppercase text-dark/30 mb-8">พันธมิตรหลัก</div>
+      <div class="flex flex-wrap items-center justify-center gap-8">
+        <div class="partner-logo-wrap glass rounded-2xl px-8 py-4 flex items-center justify-center h-16">
+          <img src="uploads/Castrol_logo_2023.svg.png" alt="Castrol" class="h-8 object-contain" />
+        </div>
+        <div class="partner-logo-wrap glass rounded-2xl px-8 py-4 flex items-center justify-center h-16">
+          <img src="uploads/Denso.png" alt="Denso" class="h-7 object-contain" />
+        </div>
+        <div class="partner-logo-wrap glass rounded-2xl px-8 py-4 flex items-center justify-center h-16 gap-3">
+          <img src="uploads/Niterra.jpg" alt="Niterra" class="h-8 w-8 object-cover rounded-lg" />
+          <span class="font-bold text-dark text-sm">Niterra</span>
+        </div>
+        <div class="partner-logo-wrap glass rounded-2xl px-8 py-4 flex items-center justify-center gap-3 h-16">
+          <img src="uploads/Mitsuboshi-2f6d7202.jpg" alt="Mitsuboshi" class="h-8 object-contain rounded-md" />
+          <span class="font-black text-dark/70 text-sm tracking-tight" style="font-family:'Outfit',sans-serif;">MITSUBOSHI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<footer id="footer" class="py-16 px-6 relative overflow-hidden" style="background:#291b25;">
+  <div class="absolute top-0 left-0 right-0 h-px" style="background:linear-gradient(90deg,transparent,#ed5b2d,transparent);"></div>
+  <div class="absolute -bottom-20 -right-20 w-64 h-64 rounded-full opacity-10" style="background:radial-gradient(circle,#ed5b2d,transparent);"></div>
+
+  <div class="max-w-7xl mx-auto">
+    <div class="grid md:grid-cols-3 gap-12 mb-12">
+      <!-- Brand -->
+      <div>
+        <img src="uploads/Nice 2nd BIG Trans.png" alt="Nice Center Oil" class="h-12 object-contain mb-4" style="filter:brightness(0) invert(1);" />
+        <p class="text-white/50 text-sm leading-relaxed" style="font-family:'Noto Sans Thai',sans-serif;">ตัวแทนจำหน่ายน้ำมันเครื่องและอะไหล่ยานยนต์อย่างเป็นทางการ ประสบการณ์กว่า 20 ปี</p>
+        <!-- Social: LINE only -->
+        <div class="mt-5 flex gap-3">
+          <a href="https://line.me/ti/p/~@356csnbc" target="_blank"
+             class="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
+             style="background:#06C755;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.630 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61574810262552" target="_blank"
+             class="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
+             style="background:#1877F2;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Contact — Tel + Line ONLY, no email -->
+      <div>
+        <h4 class="text-white font-bold mb-5" style="font-family:'Noto Sans Thai',sans-serif;">ติดต่อเรา</h4>
+        <div class="space-y-4 text-white/60 text-sm">
+          <div class="flex items-start gap-3">
+            <svg class="flex-shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span style="font-family:'Noto Sans Thai',sans-serif;">212 ม.5 ซ.สำนักเกษตร ต.อู่ทอง อ.อู่ทอง จ.สุพรรณบุรี 72160</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3" ry="3"/><circle cx="12" cy="18" r="1" fill="#ed5b2d" stroke="none"/><line x1="9" y1="5" x2="15" y2="5"/></svg>
+            <a href="tel:0632029333" class="hover:text-nice transition-colors font-semibold">063-202-9333</a>
+          </div>
+          <div class="flex items-center gap-3">
+            <svg class="flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="#06C755"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.630 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+            <a href="https://line.me/ti/p/~@356csnbc" target="_blank" class="hover:text-nice transition-colors">Line OA: @356csnbc</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hours -->
+      <div>
+        <h4 class="text-white font-bold mb-5" style="font-family:'Noto Sans Thai',sans-serif;">เวลาทำการ</h4>
+        <div class="space-y-3 text-white/60 text-sm" style="font-family:'Noto Sans Thai',sans-serif;">
+          <div class="flex justify-between">
+            <span>จันทร์ – เสาร์</span>
+            <span class="text-white font-semibold">08:30 – 17:00</span>
+          </div>
+          <div class="flex justify-between">
+            <span>อาทิตย์</span>
+            <span class="text-white/40">ปิดทำการ</span>
+          </div>
+          <div class="flex justify-between pt-3 border-t border-white/10">
+            <span>ช่องทางติดต่อ</span>
+            <span class="text-white">โทร · Line OA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="text-center md:text-left">
+        <p class="text-white/30 text-xs" style="font-family:'Noto Sans Thai',sans-serif;">© 2024 หจก. ไนซ์ เซ็นเตอร์ ออยล์ · เลขประจำตัวผู้เสียภาษี 0723544000311</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <img src="uploads/Castrol_logo_2023.svg.png" alt="Castrol" class="h-5 object-contain opacity-50 hover:opacity-90 transition-opacity" />
+        <img src="uploads/Denso.png" alt="Denso" class="h-4 object-contain opacity-50 hover:opacity-90 transition-opacity" style="filter:brightness(0) invert(1);" />
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════ SCRIPTS ══════════════════════ -->
+<script>
+// ─── WEBGL SHADER HERO ───
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+  const fragShader = `
+    precision mediump float;
+    uniform float u_time; uniform vec2 u_res; uniform vec2 u_mouse;
+    float hash(vec2 p){p=fract(p*vec2(234.34,435.345));p+=dot(p,p+34.23);return fract(p.x*p.y);}
+    float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
+    float fbm(vec2 p){float v=0.0;float a=0.5;for(int i=0;i<5;i++){v+=a*noise(p);p=p*2.1+vec2(5.678,1.234);a*=0.48;}return v;}
+    void main(){
+      vec2 uv=gl_FragCoord.xy/u_res; uv.y=1.0-uv.y;
+      float t=u_time*0.07; vec2 mouse=u_mouse;
+      vec2 q=vec2(fbm(uv*1.8+t*0.5),fbm(uv*1.8+vec2(5.2,1.3)+t*0.4));
+      vec2 r=vec2(fbm(uv+q+vec2(1.7,9.2)+t*0.18),fbm(uv+q+vec2(8.3,2.8)+t*0.14));
+      float f=fbm(uv*1.2+r+mouse*0.06);
+      vec3 dark=vec3(0.031,0.031,0.063); vec3 ember=vec3(0.14,0.05,0.02); vec3 orange=vec3(0.40,0.12,0.04); vec3 steel=vec3(0.06,0.07,0.11);
+      vec3 col=mix(dark,steel,smoothstep(0.15,0.5,f)*0.35);
+      col=mix(col,ember,smoothstep(0.42,0.68,f)*0.65);
+      col=mix(col,orange,smoothstep(0.60,0.82,f)*0.42);
+      float vign=1.0-smoothstep(0.25,1.15,length(uv-vec2(0.5))*1.7);
+      col*=mix(0.18,1.0,vign);
+      col+=(hash(uv*600.0+t*8.0)-0.5)*0.016;
+      gl_FragColor=vec4(clamp(col,0.0,1.0),1.0);
+    }
+  `;
+  const mat = new THREE.ShaderMaterial({
+    uniforms:{u_time:{value:0.0},u_res:{value:new THREE.Vector2(800,600)},u_mouse:{value:new THREE.Vector2(0.5,0.5)}},
+    vertexShader:'void main(){gl_Position=vec4(position,1.0);}',
+    fragmentShader:fragShader,depthWrite:false
+  });
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),mat));
+  function resize(){const h=document.getElementById('hero');const W=h.clientWidth,H=h.clientHeight;renderer.setSize(W,H);mat.uniforms.u_res.value.set(W,H);}
+  resize(); window.addEventListener('resize',resize);
+  window.addEventListener('mousemove',e=>{mat.uniforms.u_mouse.value.set(e.clientX/window.innerWidth,1-e.clientY/window.innerHeight);});
+  let t=0;(function loop(){requestAnimationFrame(loop);t+=0.016;mat.uniforms.u_time.value=t;renderer.render(scene,camera);})();
+})();
+
+// ─── HERO PARTICLES ───
+(function() {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const hero = document.getElementById('hero');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = hero.clientWidth;
+    H = canvas.height = hero.clientHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function randomParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: -Math.random() * 0.5 - 0.1,
+      alpha: Math.random() * 0.5 + 0.1,
+      life: 0,
+      maxLife: Math.random() * 400 + 200
+    };
+  }
+
+  for (let i = 0; i < 80; i++) particles.push(randomParticle());
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.life++;
+      p.x += p.vx;
+      p.y += p.vy;
+      const lifeRatio = p.life / p.maxLife;
+      const a = lifeRatio < 0.1 ? lifeRatio * 10 : lifeRatio > 0.8 ? (1 - lifeRatio) * 5 : 1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      // Alternate between orange sparks and steel-blue dots
+      const isOrange = i % 3 === 0;
+      ctx.fillStyle = isOrange
+        ? `rgba(237,91,45,${p.alpha * a * 0.7})`
+        : `rgba(180,195,220,${p.alpha * a * 0.4})`;
+      ctx.fill();
+      if (p.life >= p.maxLife || p.y < -10 || p.x < -10 || p.x > W + 10) {
+        particles[i] = randomParticle();
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ─── THEME TOGGLE ───
+(function() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  const saved = localStorage.getItem('nco-theme');
+  // Default is LIGHT — only apply dark if explicitly saved
+  if (saved === 'dark') document.body.classList.add('theme-dark');
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('theme-dark');
+    const isDark = document.body.classList.contains('theme-dark');
+    localStorage.setItem('nco-theme', isDark ? 'dark' : 'light');
+  });
+})();
+
+// ─── NAVBAR SCROLL ───
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ─── GSAP + SCROLLTRIGGER ───
+gsap.registerPlugin(ScrollTrigger);
+
+// ── Reveal animations ──
+gsap.utils.toArray('.reveal').forEach(el => {
+  gsap.set(el, { opacity: 0, y: 40 });
+  gsap.to(el, {
+    opacity: 1, y: 0, duration: 0.9, ease: 'power3.out',
+    scrollTrigger: { trigger: el, start: 'top 92%', toggleActions: 'play none none none' }
+  });
+});
+
+// ── Counter animation ──
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  let current = 0;
+  const inc = target / 60;
+  const timer = setInterval(() => {
+    current += inc;
+    if (current >= target) { current = target; clearInterval(timer); }
+    el.textContent = Math.floor(current);
+  }, 25);
+}
+document.querySelectorAll('.counter').forEach(counter => {
+  ScrollTrigger.create({
+    trigger: counter, start: 'top 80%',
+    onEnter: () => animateCounter(counter), once: true
+  });
+});
+
+(function() {
+  const section = document.getElementById('story-fluid');
+  if (!section) return;
+  const scene   = document.getElementById('fluid-scene');
+
+  ScrollTrigger.create({
+    trigger: section,
+    start: 'top top',
+    end: 'bottom bottom',
+    pin: scene,
+    pinSpacing: false
+  });
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 1.2
+    }
+  });
+
+  gsap.set('#fluid-card-car',  { opacity: 0, y: 50, scale: 0.96 });
+  gsap.set('#fluid-card-bike', { opacity: 0, y: 50, scale: 0.96 });
+  gsap.set('#fluid-foot',      { opacity: 0, y: 20 });
+
+  tl.to('#fluid-card-car',  { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.1)
+    .to('#fluid-card-bike', { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.5)
+    .to('#fluid-foot',      { opacity: 1, y: 0, duration: 0.5 }, 1.0);
+})();
+
+// ─── INTERACTIVE PROVINCE MAP ───
+const PROVINCE_DATA = {
+  'สุพรรณบุรี': {
+    region: 'ภาคกลาง · HQ',
+    badge: 'HQ &amp; คลังสินค้า',
+    badgeColor: '#ed5b2d',
+    address: '212 ม.5 ซ.สำนักเกษตร ต.อู่ทอง อ.อู่ทอง จ.สุพรรณบุรี 72160',
+    amphoe: 10, area: '5,358', pop: '848K',
+    districts: ['อู่ทอง','เมืองสุพรรณบุรี','สองพี่น้อง','บางปลาม้า','ศรีประจันต์','ดอนเจดีย์','สามชุก','เดิมบางนางบวช','หนองหญ้าไซ','ด่านช้าง'],
+    hqDistrict: 'อู่ทอง'
+  },
+  'สิงห์บุรี': {
+    region: 'ภาคกลาง · DSR',
+    badge: 'DSR ประจำพื้นที่',
+    badgeColor: '#9c3f1c',
+    address: 'จัดส่งตามรอบประจำสัปดาห์ · ทีม DSR ดูแลใกล้ชิด',
+    amphoe: 6, area: '823', pop: '208K',
+    districts: ['เมืองสิงห์บุรี','บางระจัน','ค่ายบางระจัน','พรหมบุรี','ท่าช้าง','อินทร์บุรี']
+  },
+  'อ่างทอง': {
+    region: 'ภาคกลาง · DSR',
+    badge: 'DSR ประจำพื้นที่',
+    badgeColor: '#9c3f1c',
+    address: 'จัดส่งตามรอบประจำสัปดาห์ · ทีม DSR ดูแลใกล้ชิด',
+    amphoe: 7, area: '968', pop: '281K',
+    districts: ['เมืองอ่างทอง','ไชโย','ป่าโมก','โพธิ์ทอง','แสวงหา','วิเศษชัยชาญ','สามโก้']
+  },
+  'อุทัยธานี': {
+    region: 'ภาคกลาง · DSR',
+    badge: 'DSR ประจำพื้นที่',
+    badgeColor: '#9c3f1c',
+    address: 'จัดส่งตามรอบประจำสัปดาห์ · ทีม DSR ดูแลใกล้ชิด',
+    amphoe: 8, area: '6,730', pop: '329K',
+    districts: ['เมืองอุทัยธานี','ทัพทัน','สว่างอารมณ์','หนองฉาง','หนองขาหย่าง','บ้านไร่','ลานสัก','ห้วยคต']
+  },
+  'ชัยนาท': {
+    region: 'ภาคกลาง · DSR',
+    badge: 'DSR ประจำพื้นที่',
+    badgeColor: '#9c3f1c',
+    address: 'จัดส่งตามรอบประจำสัปดาห์ · ทีม DSR ดูแลใกล้ชิด',
+    amphoe: 8, area: '2,470', pop: '326K',
+    districts: ['เมืองชัยนาท','มโนรมย์','วัดสิงห์','สรรพยา','สรรคบุรี','หันคา','หนองมะโมง','เนินขาม']
+  },
+  'นครสวรรค์': {
+    region: 'ภาคกลางตอนบน · DSR',
+    badge: 'DSR ประจำพื้นที่',
+    badgeColor: '#9c3f1c',
+    address: 'จัดส่งตามรอบประจำสัปดาห์ · ทีม DSR ดูแลใกล้ชิด',
+    amphoe: 15, area: '9,598', pop: '1.04M',
+    districts: ['เมืองนครสวรรค์','โกรกพระ','ชุมแสง','หนองบัว','บรรพตพิสัย','เก้าเลี้ยว','ตาคลี','ท่าตะโก','ไพศาลี','พยุหะคีรี','ลาดยาว','ตากฟ้า','แม่วงก์','แม่เปิน','ชุมตาบง']
+  }
+};
+
+(function() {
+  const panel    = document.getElementById('prov-detail-panel');
+  if (!panel) return;
+  const nameEl   = document.getElementById('pd-name');
+  const regionEl = document.getElementById('pd-region');
+  const badgeEl  = document.getElementById('pd-badge');
+  const addrEl   = document.getElementById('pd-address-text');
+  const amphoeEl = document.getElementById('pd-amphoe');
+  const areaEl   = document.getElementById('pd-area');
+  const popEl    = document.getElementById('pd-pop');
+  const countEl  = document.getElementById('pd-count');
+  const distList = document.getElementById('pd-districts');
+
+  function selectProvince(name) {
+    const d = PROVINCE_DATA[name];
+    if (!d) return;
+
+    // Reset map shapes
+    document.querySelectorAll('.prov-group').forEach(g => {
+      g.classList.toggle('active', g.dataset.prov === name);
+      const path = g.querySelector('.prov-shape');
+      if (path) path.classList.toggle('active', g.dataset.prov === name);
+    });
+    // Reset chip row
+    document.querySelectorAll('.prov-chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.prov === name);
+    });
+
+    // Swap panel content with subtle fade
+    panel.classList.add('swap');
+    setTimeout(() => {
+      nameEl.textContent   = name;
+      regionEl.textContent = d.region;
+      badgeEl.innerHTML    = d.badge;
+      badgeEl.style.background = d.badgeColor;
+      addrEl.textContent   = d.address;
+      amphoeEl.textContent = d.amphoe;
+      areaEl.textContent   = d.area;
+      popEl.textContent    = d.pop;
+      countEl.textContent  = d.districts.length + ' อำเภอ';
+      distList.innerHTML = d.districts.map(dt => {
+        const isHQ = (dt === d.hqDistrict);
+        return `<span class="district-pill${isHQ ? ' hq' : ''}">${isHQ ? '★ ' : ''}${dt}</span>`;
+      }).join('');
+      panel.classList.remove('swap');
+    }, 150);
+  }
+
+  // Click handlers on map shapes
+  document.querySelectorAll('.prov-group').forEach(g => {
+    g.addEventListener('click', () => selectProvince(g.dataset.prov));
+    g.style.cursor = 'pointer';
+  });
+  // Click handlers on chip selector
+  document.querySelectorAll('.prov-chip').forEach(c => {
+    c.addEventListener('click', () => selectProvince(c.dataset.prov));
+  });
+
+  // Default selection
+  selectProvince('สุพรรณบุรี');
+})();
+
+// ─── Hero entrance ───
+gsap.from('#hero-logo',    { opacity:0, y:-20, scale:0.9, duration:1,   delay:0.2, ease:'power3.out' });
+gsap.from('#hero-tag',     { opacity:0, y:15,             duration:0.8, delay:0.5, ease:'power3.out' });
+gsap.from('#hero-h1',      { opacity:0, y:40,             duration:1,   delay:0.7, ease:'power3.out' });
+gsap.from('#hero-sub',     { opacity:0, y:30,             duration:0.9, delay:0.9, ease:'power3.out' });
+gsap.from('#hero-chips',   { opacity:0, y:20,             duration:0.8, delay:1.1, ease:'power3.out' });
+gsap.from('#hero-ctas',    { opacity:0, y:20,             duration:0.8, delay:1.3, ease:'power3.out' });
+gsap.from('#hero-partners',{ opacity:0, y:15,             duration:0.8, delay:1.5, ease:'power3.out' });
+gsap.from('#hero-stats',   { opacity:0, y:15,             duration:0.8, delay:1.7, ease:'power3.out' });
+</script>
+</body>
+</html>
