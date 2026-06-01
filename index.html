@@ -4,8 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Nice Center Oil – ตัวแทนจำหน่ายน้ำมันเครื่องอย่างเป็นทางการ</title>
-<link rel="icon" type="image/png" href="favicon.png?v=2" />
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2" />
+<link rel="icon" type="image/png" href="favicon.png?v=3" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=3" />
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -623,6 +623,24 @@
     .bike-feats { max-width: 50%; }
     .bike-feats li { font-size: 12px; }
   }
+  /* Mobile: unpin the Full-Synthetic scene so stacked cards flow normally (no header overlap) */
+  @media (max-width: 768px) {
+    #story-fluid { height: auto !important; }
+    #fluid-scene {
+      position: relative !important;
+      height: auto !important;
+      min-height: 0 !important;
+      display: block !important;
+      padding: 64px 0 56px !important;
+      overflow: visible !important;
+    }
+    #fluid-header {
+      position: relative !important;
+      top: auto !important; left: auto !important; right: auto !important;
+      margin-bottom: 8px;
+    }
+    #fluid-grid { margin-top: 0 !important; }
+  }
 
   /* ── MARKET IMPACT ── */
   #market-impact { background: var(--bg-impact) !important; }
@@ -1194,7 +1212,7 @@
     <div id="fluid-scene">
       <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 80% at 50% 20%, rgba(252,200,98,0.06) 0%, transparent 60%);"></div>
       <!-- header -->
-      <div class="absolute top-12 left-0 right-0 text-center pointer-events-none px-6" style="z-index:3;">
+      <div id="fluid-header" class="absolute top-12 left-0 right-0 text-center pointer-events-none px-6" style="z-index:3;">
         <div class="text-xs font-bold tracking-[0.25em] uppercase mb-3" style="color:rgba(252,200,98,0.7);font-family:'Outfit',sans-serif;">— Full Synthetic Technology —</div>
         <h2 class="thai-head text-4xl md:text-5xl" style="color:var(--fluid-h, #fff);">น้ำมันสังเคราะห์ <span style="color:#fcc862;">100%</span></h2>
         <p class="text-white/40 mt-2 text-sm md:text-base" style="font-family:'Noto Sans Thai',sans-serif;">ครอบคลุมทั้งรถยนต์และมอเตอร์ไซค์</p>
@@ -1202,7 +1220,7 @@
 
       <!-- TWO BOTTLES SIDE-BY-SIDE -->
       <div class="relative w-full max-w-5xl px-6" style="z-index:2;">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 mt-24">
+        <div id="fluid-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 mt-24">
 
           <!-- CAR -->
           <div id="fluid-card-car" class="fluid-card relative rounded-3xl p-8 md:p-10 overflow-hidden" style="background:linear-gradient(155deg, rgba(9,146,71,0.18) 0%, rgba(9,146,71,0.04) 60%, transparent 100%);border:1px solid rgba(9,146,71,0.35);backdrop-filter:blur(8px);">
@@ -1723,30 +1741,41 @@ document.querySelectorAll('.counter').forEach(counter => {
   if (!section) return;
   const scene   = document.getElementById('fluid-scene');
 
-  ScrollTrigger.create({
-    trigger: section,
-    start: 'top top',
-    end: 'bottom bottom',
-    pin: scene,
-    pinSpacing: false
-  });
+  const mm = gsap.matchMedia();
 
-  const tl = gsap.timeline({
-    scrollTrigger: {
+  // Desktop / tablet: pinned scrolly animation
+  mm.add('(min-width: 769px)', () => {
+    ScrollTrigger.create({
       trigger: section,
       start: 'top top',
       end: 'bottom bottom',
-      scrub: 1.2
-    }
+      pin: scene,
+      pinSpacing: false
+    });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.2
+      }
+    });
+
+    gsap.set('#fluid-card-car',  { opacity: 0, y: 50, scale: 0.96 });
+    gsap.set('#fluid-card-bike', { opacity: 0, y: 50, scale: 0.96 });
+    gsap.set('#fluid-foot',      { opacity: 0, y: 20 });
+
+    tl.to('#fluid-card-car',  { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.1)
+      .to('#fluid-card-bike', { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.5)
+      .to('#fluid-foot',      { opacity: 1, y: 0, duration: 0.5 }, 1.0);
   });
 
-  gsap.set('#fluid-card-car',  { opacity: 0, y: 50, scale: 0.96 });
-  gsap.set('#fluid-card-bike', { opacity: 0, y: 50, scale: 0.96 });
-  gsap.set('#fluid-foot',      { opacity: 0, y: 20 });
-
-  tl.to('#fluid-card-car',  { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.1)
-    .to('#fluid-card-bike', { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.5)
-    .to('#fluid-foot',      { opacity: 1, y: 0, duration: 0.5 }, 1.0);
+  // Mobile: no pin — cards simply visible and flowing
+  mm.add('(max-width: 768px)', () => {
+    gsap.set(['#fluid-card-car', '#fluid-card-bike', '#fluid-foot'],
+      { opacity: 1, y: 0, scale: 1, clearProps: 'transform' });
+  });
 })();
 
 // ─── INTERACTIVE PROVINCE MAP ───
