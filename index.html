@@ -158,6 +158,36 @@
   .fd-btn.ghost { border:1px solid rgba(255,255,255,.22); color:#fff; }
   .fd-btn.ghost:hover { border-color:#ed5b2d; color:#ed5b2d; }
 
+  /* ===== Lineup ===== */
+  #lineup { background: var(--bg-soft); font-family: 'Noto Sans Thai', sans-serif; }
+  .lu-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 16px; background: var(--bg-page); border: 1px solid var(--border-strong); margin-bottom: 28px; max-width: 100%; overflow-x: auto; }
+  .lu-tab { padding: 10px 16px; min-height: 44px; border-radius: 12px; font-weight: 700; font-size: .92rem; color: var(--text-muted); white-space: nowrap; transition: background .2s, color .2s; }
+  .lu-tab small { font-weight: 600; opacity: .6; margin-left: 2px; }
+  .lu-tab[aria-selected="true"] { background: #ed5b2d; color: #fff; }
+  @media (max-width: 639px) { .lu-tabs { display: flex; } .lu-tab { flex: 1; padding: 10px 8px; font-size: .84rem; } .lu-tab small { display: none; } }
+  .lu-wrap { position: relative; }
+  .lu-rail { display: grid; grid-auto-flow: column; grid-auto-columns: 74%; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 24px; scrollbar-width: none; }
+  .lu-rail::-webkit-scrollbar { display: none; }
+  .lu-rail[hidden] { display: none; }
+  @media (min-width: 640px) { .lu-rail { grid-auto-columns: 42%; } }
+  @media (min-width: 1024px) { .lu-rail { grid-auto-flow: row; grid-template-columns: repeat(4, 1fr); overflow: visible; padding: 4px 20px 8px; } }
+  .lu-card { scroll-snap-align: center; display: flex; flex-direction: column; padding: 18px; border-radius: 22px; background: var(--bg-page); border: 1px solid var(--border); }
+  .lu-img { height: 210px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 14px;
+    background: radial-gradient(ellipse 60% 40% at 50% 92%, rgba(41,27,37,.10), transparent 70%); }
+  .lu-img img { max-height: 200px; max-width: 88%; width: auto; height: auto; object-fit: contain; transition: opacity .18s, transform .3s cubic-bezier(.2,.8,.2,1); }
+  .lu-img img.is-swapping { opacity: 0; transform: translateY(6px) scale(.97); }
+  .lu-name { font: 900 italic 1.3rem/1.15 'Barlow', 'Noto Sans Thai', sans-serif; color: var(--text-strong); }
+  .lu-desc { font-size: .86rem; line-height: 1.65; color: var(--text-muted); margin: 6px 0 12px; flex: 1; }
+  .lu-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .lu-chip { padding: 6px 11px; min-height: 34px; border-radius: 10px; font: 700 .8rem 'Barlow', 'Noto Sans Thai', sans-serif; letter-spacing: .02em;
+    border: 1.5px solid var(--border-strong); color: var(--text-body); transition: all .18s; }
+  .lu-chip:hover { border-color: #ed5b2d; color: #ed5b2d; }
+  .lu-chip[aria-pressed="true"] { background: var(--text-strong); border-color: var(--text-strong); color: var(--bg-page); }
+  .lu-ask { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 12px; font-weight: 700; font-size: .9rem;
+    color: #06A847; border: 1.5px solid rgba(6,199,85,.35); transition: background .2s, color .2s; }
+  .lu-ask:hover { background: #06C755; color: #fff; border-color: #06C755; }
+  body.theme-dark .lu-img { background: radial-gradient(ellipse 60% 40% at 50% 92%, rgba(255,255,255,.08), transparent 70%); }
+
   /* ===== Open / closed badge ===== */
   .open-badge { display:inline-flex; align-items:center; gap:8px; font-size:.82rem; font-weight:600; }
   .open-badge i { width:8px; height:8px; border-radius:50%; background:#9a9a9a; flex-shrink:0; }
@@ -997,6 +1027,7 @@
     <a href="#finder" class="nav-link">หาน้ำมันให้รถคุณ</a>
     <a href="#coverage" class="nav-link">พื้นที่บริการ</a>
     <a href="#products" class="nav-link">สินค้า</a>
+    <a href="#lineup" class="nav-link">รุ่นน้ำมันเครื่องทั้งหมด</a>
     <a href="#scrollytelling" class="nav-link">ทำไมต้องเรา</a>
     <a href="#trust" class="nav-link">เกี่ยวกับเรา</a>
     <a href="#faq" class="nav-link">คำถามที่พบบ่อย</a>
@@ -1594,6 +1625,142 @@
 </div><!-- end scrollytelling -->
 
 <!-- ══════════════════════ MARKET IMPACT ══════════════════════ -->
+<!-- ══════════════════════ LINEUP ══════════════════════ -->
+<section id="lineup" class="py-20 md:py-24">
+  <div class="max-w-7xl mx-auto px-5">
+    <h2 class="thai-head text-3xl md:text-5xl mb-3" style="color:var(--text-strong);">น้ำมันเครื่อง Castrol ที่เราส่งให้ร้านค้า</h2>
+    <p class="mb-8 max-w-xl" style="color:var(--text-muted);line-height:1.8;">ครบ 35 รุ่น แตะเกรดความหนืดเพื่อดูขวดจริง แล้วกดสอบถามรุ่นที่ต้องการได้ทันที</p>
+    <div class="lu-tabs" role="tablist" aria-label="ประเภทรถ"><button type="button" role="tab" class="lu-tab" data-tab="bike" aria-selected="true">มอเตอร์ไซค์ <small>13</small></button><button type="button" role="tab" class="lu-tab" data-tab="car" aria-selected="false">รถยนต์เบนซิน <small>11</small></button><button type="button" role="tab" class="lu-tab" data-tab="diesel" aria-selected="false">กระบะ / ดีเซล <small>11</small></button></div>
+  </div>
+  <div class="max-w-7xl mx-auto lu-wrap">
+      <div class="lu-rail" role="tabpanel" data-panel="bike">
+        <article class="lu-card" data-name="Castrol POWER1 ULTIMATE">
+          <div class="lu-img"><img src="uploads/bottles/pw1-ult-10w40.webp" alt="Castrol POWER1 ULTIMATE 10W-40" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">POWER1 ULTIMATE</h3>
+          <p class="lu-desc">สังเคราะห์แท้ 100% ตัวท็อปสำหรับบิ๊กไบค์และรถที่ต้องการสมรรถนะสูงสุด</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/pw1-ult-10w40.webp" data-grade="10W-40" aria-pressed="true">10W-40</button><button type="button" class="lu-chip" data-img="uploads/bottles/pw1-ult-5w40.webp" data-grade="5W-40" aria-pressed="false">5W-40</button><button type="button" class="lu-chip" data-img="uploads/bottles/pw1-ult-10w30.webp" data-grade="10W-30" aria-pressed="false">10W-30</button><button type="button" class="lu-chip" data-img="uploads/bottles/pw1-ult-10w50.webp" data-grade="10W-50" aria-pressed="false">10W-50</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol POWER1">
+          <div class="lu-img"><img src="uploads/bottles/pw1-10w40.webp" alt="Castrol POWER1 10W-40" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">POWER1</h3>
+          <p class="lu-desc">รถเกียร์ที่ขี่ทุกวัน ระยะทางเยอะ อัตราเร่งดี ทนความร้อน</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/pw1-10w40.webp" data-grade="10W-40" aria-pressed="true">10W-40</button><button type="button" class="lu-chip" data-img="uploads/bottles/pw1-10w30-1l.webp" data-grade="10W-30" aria-pressed="false">10W-30</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol POWER1 AUTOMATIC">
+          <div class="lu-img"><img src="uploads/bottles/pw1-at-10w40.webp" alt="Castrol POWER1 AUTOMATIC 10W-40" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">POWER1 AUTOMATIC</h3>
+          <p class="lu-desc">รถออโตเมติก สกู๊ตเตอร์ ที่ใช้งานหนักทุกวัน</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/pw1-at-10w40.webp" data-grade="10W-40" aria-pressed="true">10W-40</button><button type="button" class="lu-chip" data-img="uploads/bottles/pw1-at-10w30.webp" data-grade="10W-30" aria-pressed="false">10W-30</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol ACTIV">
+          <div class="lu-img"><img src="uploads/bottles/activ-1l.webp" alt="Castrol ACTIV 20W-40 · 1 ลิตร" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">ACTIV</h3>
+          <p class="lu-desc">รถเกียร์ ใช้งานทั่วไปในชีวิตประจำวัน</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/activ-1l.webp" data-grade="20W-40 · 1 ลิตร" aria-pressed="true">20W-40 · 1 ลิตร</button><button type="button" class="lu-chip" data-img="uploads/bottles/activ-0-8l.webp" data-grade="20W-40 · 0.8 ลิตร" aria-pressed="false">20W-40 · 0.8 ลิตร</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol ACTIV AUTOMATIC">
+          <div class="lu-img"><img src="uploads/bottles/activ-at.webp" alt="Castrol ACTIV AUTOMATIC 20W-40" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">ACTIV AUTOMATIC</h3>
+          <p class="lu-desc">รถออโตเมติก สกู๊ตเตอร์ ใช้งานทั่วไป</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/activ-at.webp" data-grade="20W-40" aria-pressed="true">20W-40</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol ACTIV ESSENTIAL">
+          <div class="lu-img"><img src="uploads/bottles/activ-ess-0-8l.webp" alt="Castrol ACTIV ESSENTIAL SAE 40" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">ACTIV ESSENTIAL</h3>
+          <p class="lu-desc">รุ่นคุ้มค่าสำหรับรถใช้งานทั่วไป</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/activ-ess-0-8l.webp" data-grade="SAE 40" aria-pressed="true">SAE 40</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol Go! 2T">
+          <div class="lu-img"><img src="uploads/bottles/go-2t-1l.webp" alt="Castrol Go! 2T 2T" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">Go! 2T</h3>
+          <p class="lu-desc">สำหรับรถมอเตอร์ไซค์ 2 จังหวะ</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/go-2t-1l.webp" data-grade="2T" aria-pressed="true">2T</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+      </div>
+<div class="lu-rail" role="tabpanel" data-panel="car" hidden>
+        <article class="lu-card" data-name="Castrol EDGE">
+          <div class="lu-img"><img src="uploads/bottles/edge-5w30-c3.webp" alt="Castrol EDGE 5W-30" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">EDGE</h3>
+          <p class="lu-desc">สังเคราะห์แท้ 100% ปกป้องสูงสุด สำหรับรถยุโรปและรถสมรรถนะสูง</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/edge-5w30-c3.webp" data-grade="5W-30" aria-pressed="true">5W-30</button><button type="button" class="lu-chip" data-img="uploads/bottles/edge-5w40-a3b4.webp" data-grade="5W-40" aria-pressed="false">5W-40</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol MAGNATEC สังเคราะห์แท้">
+          <div class="lu-img"><img src="uploads/bottles/mag-fs-5w30.webp" alt="Castrol MAGNATEC สังเคราะห์แท้ 5W-30" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">MAGNATEC สังเคราะห์แท้</h3>
+          <p class="lu-desc">ปกป้องเครื่องยนต์ตั้งแต่สตาร์ท เหมาะกับการขับในเมือง รถติด</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/mag-fs-5w30.webp" data-grade="5W-30" aria-pressed="true">5W-30</button><button type="button" class="lu-chip" data-img="uploads/bottles/mag-eco-0w20.webp" data-grade="0W-20" aria-pressed="false">0W-20</button><button type="button" class="lu-chip" data-img="uploads/bottles/mag-fs-5w40.webp" data-grade="5W-40" aria-pressed="false">5W-40</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol MAGNATEC">
+          <div class="lu-img"><img src="uploads/bottles/mag-ps-10w40.webp" alt="Castrol MAGNATEC 10W-40" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">MAGNATEC</h3>
+          <p class="lu-desc">ปกป้องตั้งแต่สตาร์ท ราคาเข้าถึงง่าย</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/mag-ps-10w40.webp" data-grade="10W-40" aria-pressed="true">10W-40</button><button type="button" class="lu-chip" data-img="uploads/bottles/mag-ps-10w30.webp" data-grade="10W-30" aria-pressed="false">10W-30</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol GTX สังเคราะห์แท้">
+          <div class="lu-img"><img src="uploads/bottles/gtx-fs-0w20.webp" alt="Castrol GTX สังเคราะห์แท้ 0W-20" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">GTX สังเคราะห์แท้</h3>
+          <p class="lu-desc">สำหรับรถรุ่นใหม่ อีโคคาร์ ที่คู่มือกำหนด 0W-20</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-fs-0w20.webp" data-grade="0W-20" aria-pressed="true">0W-20</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol GTX">
+          <div class="lu-img"><img src="uploads/bottles/gtx-ps-10w40.webp" alt="Castrol GTX 10W-40" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">GTX</h3>
+          <p class="lu-desc">ช่วยยืดอายุเครื่องยนต์ คุ้มค่าสำหรับรถใช้งานทั่วไป</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-ps-10w40.webp" data-grade="10W-40" aria-pressed="true">10W-40</button><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-15w40.webp" data-grade="15W-40" aria-pressed="false">15W-40</button><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-20w50.webp" data-grade="20W-50" aria-pressed="false">20W-50</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+      </div>
+<div class="lu-rail" role="tabpanel" data-panel="diesel" hidden>
+        <article class="lu-card" data-name="Castrol EDGE PICK-UP">
+          <div class="lu-img"><img src="uploads/bottles/edge-pu-5w30.webp" alt="Castrol EDGE PICK-UP 5W-30" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">EDGE PICK-UP</h3>
+          <p class="lu-desc">สังเคราะห์แท้ 100% สำหรับกระบะที่บรรทุกหนัก วิ่งทางไกล</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/edge-pu-5w30.webp" data-grade="5W-30" aria-pressed="true">5W-30</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol MAGNATEC PICK-UP สังเคราะห์แท้">
+          <div class="lu-img"><img src="uploads/bottles/mag-fs-pu-5w30.webp" alt="Castrol MAGNATEC PICK-UP สังเคราะห์แท้ 5W-30" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">MAGNATEC PICK-UP สังเคราะห์แท้</h3>
+          <p class="lu-desc">ปกป้องตั้งแต่สตาร์ท สำหรับกระบะที่ใช้งานทุกวัน</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/mag-fs-pu-5w30.webp" data-grade="5W-30" aria-pressed="true">5W-30</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol MAGNATEC PICK-UP">
+          <div class="lu-img"><img src="uploads/bottles/mag-ps-pu-10w30.webp" alt="Castrol MAGNATEC PICK-UP 10W-30" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">MAGNATEC PICK-UP</h3>
+          <p class="lu-desc">ปกป้องตั้งแต่สตาร์ท สำหรับกระบะดีเซลทั่วไป</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/mag-ps-pu-10w30.webp" data-grade="10W-30" aria-pressed="true">10W-30</button><button type="button" class="lu-chip" data-img="uploads/bottles/mag-ps-pu-10w30-ck4.webp" data-grade="10W-30 CK-4" aria-pressed="false">10W-30 CK-4</button><button type="button" class="lu-chip" data-img="uploads/bottles/mag-ps-pu-15w40.webp" data-grade="15W-40" aria-pressed="false">15W-40</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol GTX DIESEL สังเคราะห์แท้">
+          <div class="lu-img"><img src="uploads/bottles/gtx-fs-pu-10w40.webp" alt="Castrol GTX DIESEL สังเคราะห์แท้ 10W-40" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">GTX DIESEL สังเคราะห์แท้</h3>
+          <p class="lu-desc">สำหรับกระบะ SUV ดีเซลที่ต้องการน้ำมันสังเคราะห์</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-fs-pu-10w40.webp" data-grade="10W-40" aria-pressed="true">10W-40</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+        <article class="lu-card" data-name="Castrol GTX DIESEL">
+          <div class="lu-img"><img src="uploads/bottles/gtx-pu-15w40.webp" alt="Castrol GTX DIESEL 15W-40" loading="lazy" decoding="async" width="200" height="300"></div>
+          <h3 class="lu-name">GTX DIESEL</h3>
+          <p class="lu-desc">ทนทาน คุ้มค่า สำหรับกระบะและรถดีเซลทั่วไป</p>
+          <div class="lu-chips" aria-label="เกรดความหนืด"><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-pu-15w40.webp" data-grade="15W-40" aria-pressed="true">15W-40</button><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-pu-10w30.webp" data-grade="10W-30" aria-pressed="false">10W-30</button><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-pu-20w50.webp" data-grade="20W-50" aria-pressed="false">20W-50</button><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-ps-pu-10w30.webp" data-grade="10W-30 Synthetic Tech" aria-pressed="false">10W-30 Synthetic Tech</button><button type="button" class="lu-chip" data-img="uploads/bottles/gtx-ps-pu-15w40.webp" data-grade="15W-40 Synthetic Tech" aria-pressed="false">15W-40 Synthetic Tech</button></div>
+          <a class="lu-ask" href="#" target="_blank" rel="noopener" data-track="lineup_line">สอบถามรุ่นนี้ทางไลน์</a>
+        </article>
+      </div>
+  </div>
+</section>
+
 <section id="market-impact" class="py-24 px-6">
   <div class="max-w-7xl mx-auto">
     <div class="text-center mb-16 reveal">
@@ -2066,21 +2233,27 @@ gsap.utils.toArray('.reveal').forEach(el => {
 (function(){
   const LINE_ID='%40nicecenter';
   const NOTE='เกรดความหนืด (เช่น 5W-30) ให้ดูตามคู่มือรถ — ส่งรุ่นรถมาทางไลน์ ทีมงานเช็กให้ฟรี';
+  const B='uploads/bottles/';
   const P={
-    activ:{name:'ACTIV',tag:'มอเตอร์ไซค์ 4 จังหวะ',why:'น้ำมันมอเตอร์ไซค์ยอดนิยมของ Castrol เหมาะกับรถใช้งานทั่วไปในชีวิตประจำวัน คุ้มค่า เปลี่ยนตามระยะได้สบาย'},
-    power1:{name:'POWER1',tag:'มอเตอร์ไซค์ 4 จังหวะ',why:'สำหรับคนขี่ทุกวัน ระยะทางเยอะ หรือรถติดบ่อย ช่วยให้เครื่องตอบสนองดีและทนความร้อนได้มากขึ้น'},
-    power1u:{name:'POWER1 ULTIMATE',tag:'สังเคราะห์แท้ 100%',img:'uploads/fs/power1.png',why:'ตัวท็อปสำหรับบิ๊กไบค์และรถที่ต้องการสมรรถนะสูงสุด สังเคราะห์แท้ 100%'},
-    gtx:{name:'GTX',tag:'รถเก๋ง เบนซิน',img:'uploads/fs/gtx.png',why:'ตัวเลือกที่คุ้มค่าสำหรับรถใช้งานทั่วไป ช่วยดูแลเครื่องยนต์จากคราบสกปรก'},
-    magnatec:{name:'MAGNATEC',tag:'รถเก๋ง เบนซิน',img:'uploads/fs/magnatec.png',why:'เหมาะกับการขับในเมือง รถติด สตาร์ทบ่อย ช่วยปกป้องเครื่องยนต์ตั้งแต่สตาร์ท'},
-    edge:{name:'EDGE',tag:'สังเคราะห์แท้ 100%',img:'uploads/fs/edge.png',why:'ตัวท็อปของ Castrol สำหรับรถที่ต้องการสมรรถนะและการปกป้องสูงสุด'},
-    gtxd:{name:'GTX DIESEL',tag:'กระบะ / SUV ดีเซล',img:'uploads/fs/gtx-diesel.png',why:'สำหรับกระบะและ SUV ดีเซลที่ใช้งานทั่วไป ทนทาน คุ้มค่า'},
-    edged:{name:'EDGE',tag:'ดีเซล · สังเคราะห์แท้ 100%',img:'uploads/fs/edge-pickup.png',why:'สำหรับกระบะที่บรรทุกหนัก ลากจูง หรือวิ่งทางไกลบ่อย ต้องการการปกป้องสูงสุด'},
-    crb:{name:'CRB',tag:'รถบรรทุก / เครื่องจักร',why:'น้ำมันเครื่องดีเซลงานหนักสำหรับรถบรรทุกและรถใช้งานเชิงพาณิชย์ ทนทานต่อการใช้งานต่อเนื่อง'}
+    activ:{name:'ACTIV',tag:'รถเกียร์ · 4 จังหวะ',img:B+'activ-1l.webp',why:'น้ำมันมอเตอร์ไซค์ยอดนิยม เหมาะกับรถเกียร์ที่ใช้งานทั่วไปในชีวิตประจำวัน คุ้มค่า'},
+    activat:{name:'ACTIV AUTOMATIC',tag:'รถออโตเมติก',img:B+'activ-at.webp',why:'สูตรสำหรับรถออโตเมติกและสกู๊ตเตอร์ที่ใช้งานทั่วไป'},
+    power1:{name:'POWER1',tag:'รถเกียร์ · ขี่ทุกวัน',img:B+'pw1-10w40.webp',why:'สำหรับคนขี่ทุกวัน ระยะทางเยอะ หรือรถติดบ่อย อัตราเร่งดีและทนความร้อนได้มากขึ้น'},
+    power1at:{name:'POWER1 AUTOMATIC',tag:'ออโตเมติก · ขี่ทุกวัน',img:B+'pw1-at-10w40.webp',why:'สำหรับรถออโตเมติกที่ใช้งานหนัก ขี่ทุกวัน ระยะทางเยอะ'},
+    power1u:{name:'POWER1 ULTIMATE',tag:'สังเคราะห์แท้ 100%',img:B+'pw1-ult-10w40.webp',why:'ตัวท็อปสำหรับบิ๊กไบค์และรถที่ต้องการสมรรถนะสูงสุด'},
+    go2t:{name:'Go! 2T',tag:'รถ 2 จังหวะ',img:B+'go-2t-1l.webp',why:'น้ำมันออโตลูปสำหรับรถมอเตอร์ไซค์ 2 จังหวะ'},
+    gtx:{name:'GTX',tag:'เบนซิน · ใช้งานทั่วไป',img:B+'gtx-ps-10w40.webp',why:'ตัวเลือกที่คุ้มค่าสำหรับรถใช้งานทั่วไป ช่วยยืดอายุเครื่องยนต์'},
+    magnatec:{name:'MAGNATEC',tag:'สังเคราะห์แท้ · ขับในเมือง',img:B+'mag-fs-5w30.webp',why:'เหมาะกับการขับในเมือง รถติด สตาร์ทบ่อย ช่วยปกป้องเครื่องยนต์ตั้งแต่สตาร์ท'},
+    eco:{name:'MAGNATEC 0W-20',tag:'อีโคคาร์ / รถรุ่นใหม่',img:B+'mag-eco-0w20.webp',why:'สำหรับอีโคคาร์และรถรุ่นใหม่ที่คู่มือกำหนดน้ำมันเกรด 0W-20'},
+    edge:{name:'EDGE',tag:'สังเคราะห์แท้ 100%',img:B+'edge-5w30-c3.webp',why:'ตัวท็อปของ Castrol สำหรับรถที่ต้องการสมรรถนะและการปกป้องสูงสุด'},
+    gtxd:{name:'GTX DIESEL',tag:'กระบะ · ใช้งานทั่วไป',img:B+'gtx-pu-15w40.webp',why:'สำหรับกระบะและ SUV ดีเซลที่ใช้งานทั่วไป ทนทาน คุ้มค่า'},
+    magpu:{name:'MAGNATEC PICK-UP',tag:'กระบะ · ใช้งานทุกวัน',img:B+'mag-ps-pu-10w30.webp',why:'ปกป้องตั้งแต่สตาร์ท สำหรับกระบะที่ขับทุกวันในเมืองและรถติด'},
+    edged:{name:'EDGE PICK-UP',tag:'สังเคราะห์แท้ 100%',img:B+'edge-pu-5w30.webp',why:'สำหรับกระบะที่บรรทุกหนัก ลากจูง หรือวิ่งทางไกลบ่อย ต้องการการปกป้องสูงสุด'},
+    crb:{name:'CRB',tag:'รถบรรทุก / เครื่องจักร',why:'น้ำมันเครื่องดีเซลงานหนักสำหรับรถบรรทุกและรถเชิงพาณิชย์ ทนทานต่อการใช้งานต่อเนื่อง'}
   };
   const V={
-    bike:{label:'มอเตอร์ไซค์',uses:[['ใช้งานทั่วไป','activ'],['ขี่ทุกวัน / ระยะไกล','power1'],['บิ๊กไบค์ / สมรรถนะสูง','power1u']]},
-    car:{label:'รถเก๋ง / อีโคคาร์',uses:[['ใช้งานทั่วไป คุ้มค่า','gtx'],['ขับในเมือง รถติดบ่อย','magnatec'],['ต้องการดีที่สุด','edge']]},
-    pickup:{label:'กระบะ / SUV ดีเซล',uses:[['ใช้งานทั่วไป','gtxd'],['บรรทุกหนัก / วิ่งไกล','edged']]},
+    bike:{label:'มอเตอร์ไซค์',uses:[['รถเกียร์ ใช้งานทั่วไป','activ'],['รถออโตเมติก','activat'],['ขี่ทุกวัน / ระยะไกล','power1'],['ออโตเมติก ขี่หนัก','power1at'],['บิ๊กไบค์ / สมรรถนะสูง','power1u'],['รถ 2 จังหวะ','go2t']]},
+    car:{label:'รถเก๋ง / อีโคคาร์',uses:[['ใช้งานทั่วไป คุ้มค่า','gtx'],['ขับในเมือง รถติดบ่อย','magnatec'],['อีโคคาร์ / รถรุ่นใหม่','eco'],['ต้องการดีที่สุด','edge']]},
+    pickup:{label:'กระบะ / SUV ดีเซล',uses:[['ใช้งานทั่วไป','gtxd'],['ขับทุกวัน รถติด','magpu'],['บรรทุกหนัก / วิ่งไกล','edged']]},
     truck:{label:'รถบรรทุก',uses:[['ใช้งานเชิงพาณิชย์','crb']]}
   };
   const tiles=document.querySelectorAll('.fd-tile'), usesEl=document.getElementById('fd-uses'), out=document.getElementById('fd-result');
@@ -2109,6 +2282,33 @@ gsap.utils.toArray('.reveal').forEach(el => {
   tiles.forEach(t=>t.addEventListener('click',()=>{ v=t.dataset.v; u=0; render(); }));
   usesEl.addEventListener('click',e=>{ const b=e.target.closest('.fd-use'); if(!b) return; u=+b.dataset.i; render(); });
   render();
+})();
+
+// ── Lineup: tabs + grade swap + LINE ask ──
+(function(){
+  const sec=document.getElementById('lineup'); if(!sec) return;
+  const tabs=sec.querySelectorAll('.lu-tab'), panels=sec.querySelectorAll('.lu-rail');
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.setAttribute('aria-selected', x===t));
+    panels.forEach(p=>{ p.hidden = p.dataset.panel!==t.dataset.tab; if(!p.hidden) p.scrollLeft=0; });
+  }));
+  function setAsk(card){
+    const g=card.querySelector('.lu-chip[aria-pressed="true"]');
+    const msg='สวัสดีครับ สอบถามน้ำมัน '+card.dataset.name+(g?' '+g.dataset.grade:'')+' ครับ';
+    card.querySelector('.lu-ask').href='https://line.me/R/oaMessage/%40nicecenter/?'+encodeURIComponent(msg);
+  }
+  sec.querySelectorAll('.lu-card').forEach(setAsk);
+  sec.addEventListener('click',e=>{
+    const c=e.target.closest('.lu-chip'); if(!c) return;
+    const card=c.closest('.lu-card'), img=card.querySelector('.lu-img img');
+    card.querySelectorAll('.lu-chip').forEach(x=>x.setAttribute('aria-pressed', x===c));
+    setAsk(card);
+    if(img.getAttribute('src')===c.dataset.img) return;
+    const next=new Image(); next.src=c.dataset.img;
+    img.classList.add('is-swapping');
+    const swap=()=>{ img.src=c.dataset.img; img.alt=card.dataset.name+' '+c.dataset.grade; requestAnimationFrame(()=>img.classList.remove('is-swapping')); };
+    (next.decode ? next.decode().catch(()=>{}) : Promise.resolve()).then(()=>setTimeout(swap,140));
+  });
 })();
 
 // ── Mobile action bar: slides in after the hero CTAs ──
