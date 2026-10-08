@@ -1,17 +1,35 @@
 User-agent: *
 Allow: /
 
-# AI crawlers
+# Search & AI answer engines — อนุญาตให้อ่านและอ้างอิงเว็บไซต์
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
 User-agent: GPTBot
 Allow: /
 
-User-agent: Claude-Web
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
 Allow: /
 
 User-agent: PerplexityBot
-Allow: /
-
-User-agent: Googlebot
 Allow: /
 
 Sitemap: https://nicecenter.co.th/sitemap.xml
