@@ -111,6 +111,7 @@
 
   /* ===== Oil finder ===== */
   #finder { background: var(--bg-page); color: var(--text-body); font-family: 'Noto Sans Thai', sans-serif; }
+  #finder .grid > * { min-width: 0; }
   .fd-step-label { font-size: .95rem; font-weight: 700; color: var(--text-strong); margin-bottom: 12px; }
   .fd-vehicles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   @media (min-width: 640px) { .fd-vehicles { grid-template-columns: repeat(4, 1fr); } }
@@ -127,6 +128,12 @@
   .fd-tile:active { transform: scale(.97); }
   .fd-tile[aria-pressed="true"] { background: #ed5b2d; border-color: #ed5b2d; color: #fff; }
   .fd-uses { display: flex; flex-wrap: wrap; gap: 8px; }
+  @media (max-width: 767px) {
+    /* one swipeable row so switching vehicle never changes the height */
+    .fd-uses { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -20px; padding: 2px 20px; scroll-padding: 0 20px; }
+    .fd-uses::-webkit-scrollbar { display: none; }
+    .fd-use { flex-shrink: 0; }
+  }
   .fd-use {
     padding: 11px 18px; border-radius: 999px; cursor: pointer; min-height: 44px;
     background: transparent; border: 1.5px solid var(--border-strong); color: var(--text-body);
@@ -144,7 +151,12 @@
     background: radial-gradient(circle, rgba(237,91,45,.35), transparent 65%); pointer-events:none; }
   .fd-bottle { position: relative; height: 210px; display: flex; align-items: flex-end; justify-content: center; }
   .fd-bottle img, .fd-bottle svg { max-height: 210px; max-width: 160px; object-fit: contain; filter: drop-shadow(0 18px 30px rgba(0,0,0,.5)); }
-  .fd-swap { animation: fdIn .45s cubic-bezier(.2,.8,.2,1); }
+  .fd-bottle-inner { display:flex; align-items:flex-end; justify-content:center; height:100%; width:100%; transition: opacity .2s ease, transform .35s cubic-bezier(.2,.8,.2,1); }
+  .fd-bottle-inner.is-out { opacity:0; transform: translateY(8px) scale(.97); }
+  #fd-result .fd-tag, #fd-result .fd-name, #fd-result .fd-why { transition: opacity .2s; }
+  .fd-name { min-height: 1em; }
+  @media (max-width: 767px) { .fd-name { min-height: 2em; } .fd-why { min-height: 5.25em; } }
+  @media (min-width: 768px) { .fd-why { min-height: 3.5em; } }
   @keyframes fdIn { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
   .fd-name { font: 900 italic 2.2rem/1 'Barlow', sans-serif; letter-spacing: .01em; }
   .fd-tag { display:inline-block; font-size:.75rem; font-weight:700; padding:4px 10px; border-radius:999px; background:rgba(9,146,71,.22); color:#3ddc84; margin-bottom:10px; }
@@ -153,10 +165,34 @@
   .fd-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
   .fd-btn { display:inline-flex; align-items:center; gap:8px; min-height:48px; padding:0 20px; border-radius:14px; font-weight:700; font-size:.95rem; transition: transform .15s, filter .2s; }
   .fd-btn:active { transform: scale(.97); }
+  @media (max-width: 767px) { .fd-actions { flex-direction: column; } .fd-btn { justify-content: center; width: 100%; } }
   .fd-btn.line { background:#06C755; color:#fff; }
   .fd-btn.line:hover { filter: brightness(1.08); }
   .fd-btn.ghost { border:1px solid rgba(255,255,255,.22); color:#fff; }
   .fd-btn.ghost:hover { border-color:#ed5b2d; color:#ed5b2d; }
+
+  /* ===== Brands ===== */
+  #products { background: var(--bg-page); font-family: 'Noto Sans Thai', sans-serif; }
+  .br-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (min-width: 1024px) { .br-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 16px; } }
+  .br-tile { padding: 22px 20px; border-radius: 20px; background: var(--bg-soft); border: 1px solid var(--border); }
+  .br-tile:first-child { background: linear-gradient(160deg, rgba(9,146,71,.10), rgba(9,146,71,.02) 70%), var(--bg-soft); border-color: rgba(9,146,71,.22); }
+  @media (max-width: 639px) {
+    .br-grid { grid-template-columns: 1fr; gap: 10px; }
+    .br-tile { display: grid; grid-template-columns: 92px 1fr; column-gap: 14px; align-items: center; padding: 16px; }
+    .br-logo { grid-row: span 2; margin: 0; justify-content: center; }
+    .br-logo img { max-width: 92px; }
+    .br-name { margin: 0; }
+  }
+  .br-logo { height: 44px; display:flex; align-items:center; margin-bottom: 14px; }
+  .br-name { font-weight: 800; font-size: 1.05rem; color: var(--text-strong); margin-bottom: 4px; }
+  .br-desc { font-size: .88rem; line-height: 1.7; color: var(--text-muted); }
+  .br-foot { display:flex; flex-wrap:wrap; gap:10px; margin-top: 22px; }
+  .br-link { display:inline-flex; align-items:center; min-height:48px; padding:0 20px; border-radius:14px; font-weight:700; font-size:.95rem; background:#ed5b2d; color:#fff; transition: filter .2s, transform .15s; }
+  .br-link:hover { filter: brightness(1.06); }
+  .br-link:active { transform: scale(.98); }
+  .br-link.ghost { background: transparent; color: var(--text-strong); border: 1.5px solid var(--border-strong); }
+  .br-link.ghost:hover { border-color: #06C755; color: #06A847; }
 
   /* ===== Lineup ===== */
   #lineup { background: var(--bg-soft); font-family: 'Noto Sans Thai', sans-serif; }
@@ -873,7 +909,7 @@
    "name": "Nice Center Oil จำหน่ายน้ำมันเครื่องยี่ห้ออะไรบ้าง?",
    "acceptedAnswer": {
     "@type": "Answer",
-    "text": "เราเป็นตัวแทนจำหน่ายอย่างเป็นทางการของ Castrol (น้ำมันเครื่องรถยนต์ รถบรรทุก มอเตอร์ไซค์ และน้ำมันเกียร์) เท่านั้น ไม่ได้จำหน่ายน้ำมันเครื่องยี่ห้ออื่น เช่น ZIC, Elf, Shell หรือ PTT"
+    "text": "เราเป็นตัวแทนจำหน่าย Castrol อย่างเป็นทางการ ครบทั้งน้ำมันเครื่องรถยนต์ รถกระบะ รถบรรทุก มอเตอร์ไซค์ และน้ำมันเกียร์ หากต้องการน้ำมันเครื่องยี่ห้ออื่น ทักไลน์ @nicecenter ได้เลย เราส่งต่อให้ร้านยนต์ประกิจ หน้าร้านขายปลีกที่มีครบทุกยี่ห้อ"
    }
   },
   {
@@ -1005,8 +1041,8 @@
     </a>
     <div class="hidden md:flex items-center gap-8 text-sm font-medium">
       <a href="#coverage" class="nav-link">พื้นที่บริการ</a>
-      <a href="#products" class="nav-link">สินค้า</a>
-      <a href="#scrollytelling" class="nav-link">ทำไมต้องเรา</a>
+      <a href="#products" class="nav-link">แบรนด์</a>
+      <a href="#lineup" class="nav-link">รุ่นน้ำมันเครื่อง</a>
       <a href="#trust" class="nav-link">เกี่ยวกับเรา</a>
       <a href="#footer" class="nav-link">ติดต่อ</a>
     </div>
@@ -1026,9 +1062,8 @@
   <div id="mobile-menu" class="md:hidden" hidden>
     <a href="#finder" class="nav-link">หาน้ำมันให้รถคุณ</a>
     <a href="#coverage" class="nav-link">พื้นที่บริการ</a>
-    <a href="#products" class="nav-link">สินค้า</a>
+    <a href="#products" class="nav-link">แบรนด์ที่เราเป็นตัวแทน</a>
     <a href="#lineup" class="nav-link">รุ่นน้ำมันเครื่องทั้งหมด</a>
-    <a href="#scrollytelling" class="nav-link">ทำไมต้องเรา</a>
     <a href="#trust" class="nav-link">เกี่ยวกับเรา</a>
     <a href="#faq" class="nav-link">คำถามที่พบบ่อย</a>
     <a href="#footer" class="nav-link">ติดต่อ / แผนที่</a>
@@ -1218,12 +1253,12 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/></svg>
               Central Thailand
             </div>
-            <div class="text-[10px] uppercase tracking-widest" style="color:var(--text-soft);font-family:'Outfit',sans-serif;">Click a province</div>
+            <div class="text-xs" style="color:var(--text-soft);font-family:'Noto Sans Thai',sans-serif;">แตะจังหวัดเพื่อดูรายละเอียด</div>
           </div>
 
           <!-- MAIN MAP -->
           <div class="relative">
-            <svg id="map-main" viewBox="0 0 500 660" class="w-full" style="max-height:560px;display:block;">
+            <svg id="map-main" viewBox="52 98 398 470" class="w-full" style="max-height:620px;display:block;">
               <defs>
                 <filter id="provDrop"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
                 <linearGradient id="hqGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -1296,7 +1331,7 @@
               </g>
 
               <!-- COMPASS -->
-              <g transform="translate(450,40)" pointer-events="none">
+              <g transform="translate(424,522)" pointer-events="none">
                 <circle r="20" fill="rgba(255,255,255,0.85)" stroke="rgba(237,91,45,0.3)" stroke-width="1"/>
                 <text x="0" y="-7" text-anchor="middle" font-size="8" font-family="Outfit" font-weight="900" fill="#ed5b2d">N</text>
                 <line x1="0" y1="-14" x2="0" y2="14" stroke="rgba(237,91,45,0.5)" stroke-width="1"/>
@@ -1305,7 +1340,7 @@
               </g>
 
               <!-- SCALE BAR -->
-              <g transform="translate(40,628)" pointer-events="none">
+              <g transform="translate(72,548)" pointer-events="none">
                 <line x1="0" y1="0" x2="60" y2="0" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"/>
                 <line x1="0" y1="-3" x2="0" y2="3" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"/>
                 <line x1="60" y1="-3" x2="60" y2="3" stroke="currentColor" stroke-opacity="0.35" stroke-width="2"/>
@@ -1417,212 +1452,40 @@
 </section>
 
 <!-- ══════════════════════ PRODUCTS ══════════════════════ -->
-<section id="products" class="py-24 px-6" style="background:#f6f6e9;">
+<section id="products" class="py-20 md:py-24 px-5">
   <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-16 reveal">
-      <span class="text-xs font-bold tracking-widest uppercase text-nice/80 flex items-center justify-center gap-2 mb-4">
-        <span class="w-6 h-px bg-nice"></span> สินค้าของเรา <span class="w-6 h-px bg-nice"></span>
-      </span>
-      <h2 class="thai-head text-4xl md:text-5xl text-dark">สินค้าคุณภาพจาก <span class="grad-text">แบรนด์ชั้นนำ</span></h2>
-      <p class="text-dark/50 mt-4 text-lg" style="font-family:'Noto Sans Thai',sans-serif;">รับประกันสินค้าแท้ทุกชิ้น จากตัวแทนจำหน่ายอย่างเป็นทางการ</p>
-    </div>
-
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- Castrol -->
-      <div class="product-card rounded-3xl p-6 relative overflow-hidden reveal md:col-span-2 lg:col-span-2" style="transition-delay:0s;background:linear-gradient(135deg,rgba(9,146,71,0.07) 0%,rgba(255,255,255,0.85) 60%);backdrop-filter:blur(20px);border:1.5px solid rgba(9,146,71,0.25);box-shadow:0 8px 40px rgba(9,146,71,0.1);">
-        <div class="absolute top-0 left-0 right-0 h-1 rounded-t-3xl" style="background:linear-gradient(90deg,#099247,#0bb857);"></div>
-        <div class="flex flex-col md:flex-row gap-6 items-start">
-          <div class="flex-shrink-0">
-            <div class="w-16 h-16 rounded-2xl flex items-center justify-center" style="background:rgba(9,146,71,0.1);">
-              <img loading="lazy" decoding="async" src="uploads/Castrol.gif" alt="Castrol" class="w-12 h-12 object-contain rounded-xl" />
-            </div>
-          </div>
-          <div class="flex-1">
-            <div class="flex items-center gap-3 mb-2">
-              <div class="text-xs font-bold tracking-widest uppercase text-castrol/70">Castrol</div>
-              <span class="text-xs font-bold px-2.5 py-1 rounded-full" style="background:#099247;color:white;">★ Primary Authorized Distributor</span>
-            </div>
-            <h3 class="thai-head text-2xl text-dark mb-2">น้ำมันเครื่อง &amp; น้ำมันหล่อลื่น — สินค้าหลัก</h3>
-            <p class="text-sm text-dark/55 leading-relaxed mb-4">ครบทุกประเภทการใช้งาน ตั้งแต่ <strong class="text-dark/70">รถยนต์ รถบรรทุก มอเตอร์ไซค์</strong> จนถึงน้ำมันเกียร์และผลิตภัณฑ์เฉพาะทาง</p>
-            <div class="grid sm:grid-cols-2 gap-x-7 gap-y-4">
-              <div>
-                <div class="text-[11px] font-bold tracking-wide text-castrol/60 mb-1.5 flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-castrol/50"></span>น้ำมันเครื่องรถยนต์</div>
-                <div class="flex flex-wrap gap-1.5">
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">EDGE</span>
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">MAGNATEC</span>
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">GTX</span>
-                </div>
-              </div>
-              <div>
-                <div class="text-[11px] font-bold tracking-wide text-castrol/60 mb-1.5 flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-castrol/50"></span>น้ำมันเครื่องรถบรรทุก</div>
-                <div class="flex flex-wrap gap-1.5">
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">CRB</span>
-                </div>
-              </div>
-              <div>
-                <div class="text-[11px] font-bold tracking-wide text-castrol/60 mb-1.5 flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-castrol/50"></span>น้ำมันเครื่องมอเตอร์ไซค์</div>
-                <div class="flex flex-wrap gap-1.5">
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">POWER1 Ultimate</span>
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">POWER1</span>
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">ACTIV</span>
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">ACTIV Essential</span>
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Go!2T</span>
-                </div>
-              </div>
-              <div>
-                <div class="text-[11px] font-bold tracking-wide text-castrol/60 mb-1.5 flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-castrol/50"></span>น้ำมันเกียร์</div>
-                <div class="flex flex-wrap gap-1.5">
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Transmax</span>
-                </div>
-              </div>
-              <div class="sm:col-span-2">
-                <div class="text-[11px] font-bold tracking-wide text-castrol/60 mb-1.5 flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-castrol/50"></span>Specialty อื่นๆ</div>
-                <div class="flex flex-wrap gap-1.5">
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">น้ำมันเบรค DOT3</span>
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">น้ำมันเบรค DOT4</span>
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Radicool</span>
-                  <span class="text-xs bg-castrol/8 text-castrol border border-castrol/15 rounded-full px-2 py-0.5 font-medium">Engine Shampoo</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="absolute -bottom-8 -right-8 w-32 h-32 rounded-full opacity-8" style="background:#099247;"></div>
+    <h2 class="thai-head text-3xl md:text-5xl mb-3" style="color:var(--text-strong);">แบรนด์ที่เราเป็นตัวแทนจำหน่าย</h2>
+    <p class="mb-10 max-w-xl" style="color:var(--text-muted);line-height:1.8;">ของแท้จากผู้ผลิตทุกชิ้น ส่งถึงร้านด้วยทีมขนส่งของเราเอง พร้อมใบกำกับภาษีเต็มรูปแบบ</p>
+    <div class="br-grid">
+      <div class="br-tile">
+        <div class="br-logo"><img loading="lazy" decoding="async" src="uploads/Castrol_logo_2023.svg.png" alt="Castrol" class="h-9 object-contain"></div>
+        <h3 class="br-name">Castrol</h3>
+        <p class="br-desc">น้ำมันเครื่องรถยนต์ กระบะ รถบรรทุก มอเตอร์ไซค์ น้ำมันเกียร์ Transmax น้ำมันเบรก และ Radicool</p>
       </div>
-
-      <!-- Denso -->
-      <div class="product-card glass rounded-3xl p-6 relative overflow-hidden reveal" style="transition-delay:0.1s">
-        <div class="card-shine"></div>
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(238,1,34,0.08);">
-          <img loading="lazy" decoding="async" src="uploads/Denso.png" alt="Denso" class="w-10 h-8 object-contain" />
-        </div>
-        <div class="text-xs font-bold tracking-widest uppercase mb-2" style="color:rgba(238,1,34,0.7);">DENSO</div>
-        <h3 class="thai-head text-xl text-dark mb-3">อะไหล่แท้ OEM</h3>
-        <p class="text-sm text-dark/55 leading-relaxed mb-3">อะไหล่แท้มาตรฐาน OEM อาทิ <strong class="text-dark/70">ไส้กรองน้ำมันเครื่อง</strong> และ <strong class="text-dark/70">หัวเทียนมอเตอร์ไซค์</strong> คุณภาพมาตรฐานญี่ปุ่น</p>
-        <div class="flex flex-wrap gap-1 mb-4">
-          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(238,1,34,0.06);color:rgba(238,1,34,0.8);border-color:rgba(238,1,34,0.15);">ไส้กรองน้ำมันเครื่อง</span>
-          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(238,1,34,0.06);color:rgba(238,1,34,0.8);border-color:rgba(238,1,34,0.15);">หัวเทียนมอเตอร์ไซค์</span>
-        </div>
-        <div class="sep my-4 opacity-30"></div>
-        <div class="flex items-center justify-between">
-          <span class="text-xs text-dark/40 font-medium">ตัวแทนทางการ</span>
-          <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background:rgba(238,1,34,0.1);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ee0122" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
-        <div class="absolute -bottom-6 -right-6 w-24 h-24 rounded-full opacity-8" style="background:#ee0122;"></div>
+      <div class="br-tile">
+        <div class="br-logo"><img loading="lazy" decoding="async" src="uploads/Denso.png" alt="Denso" class="h-7 object-contain"></div>
+        <h3 class="br-name">Denso</h3>
+        <p class="br-desc">ไส้กรองน้ำมันเครื่อง และหัวเทียนมอเตอร์ไซค์ มาตรฐาน OEM</p>
       </div>
-
-      <!-- Niterra/NGK -->
-      <div class="product-card glass rounded-3xl p-6 relative overflow-hidden reveal" style="transition-delay:0.2s">
-        <div class="card-shine"></div>
-        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(0,140,145,0.1);">
-          <img loading="lazy" decoding="async" src="uploads/Niterra.jpg" alt="Niterra" class="w-10 h-10 object-cover rounded-xl" />
-        </div>
-        <div class="text-xs font-bold tracking-widest uppercase mb-2" style="color:rgba(0,140,145,0.8);">NITERRA / NGK</div>
-        <h3 class="thai-head text-xl text-dark mb-3">หัวเทียน &amp; สายพาน</h3>
-        <p class="text-sm text-dark/55 leading-relaxed mb-3">หัวเทียนประสิทธิภาพสูงสำหรับ<strong class="text-dark/70">รถยนต์และมอเตอร์ไซค์</strong> พร้อม <strong class="text-dark/70">สายพาน Mitsuboshi</strong> ที่ช่างมืออาชีพแนะนำ</p>
-        <div class="flex flex-wrap gap-1 mb-4">
-          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(0,140,145,0.06);color:rgba(0,140,145,0.9);border-color:rgba(0,140,145,0.15);">Iridium</span>
-          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(0,140,145,0.06);color:rgba(0,140,145,0.9);border-color:rgba(0,140,145,0.15);">GP Platinum</span>
-          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(0,140,145,0.06);color:rgba(0,140,145,0.9);border-color:rgba(0,140,145,0.15);">Standard</span>
-          <span class="text-xs rounded-full px-2 py-0.5 font-medium border" style="background:rgba(0,140,145,0.06);color:rgba(0,140,145,0.9);border-color:rgba(0,140,145,0.15);">Mitsuboshi Belt</span>
-        </div>
-        <div class="sep my-4 opacity-30"></div>
-        <div class="flex items-center justify-between">
-          <span class="text-xs text-dark/40 font-medium">ตัวแทนทางการ</span>
-          <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background:rgba(0,140,145,0.1);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#008c91" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
-        <div class="absolute -bottom-6 -right-6 w-24 h-24 rounded-full opacity-8" style="background:#008c91;"></div>
+      <div class="br-tile">
+        <div class="br-logo"><img loading="lazy" decoding="async" src="uploads/Niterra.jpg" alt="NGK / Niterra" class="h-10 w-10 rounded-lg object-contain"></div>
+        <h3 class="br-name">NGK / Niterra</h3>
+        <p class="br-desc">หัวเทียนรถยนต์และมอเตอร์ไซค์ รุ่น Iridium, GP, Platinum และ Standard</p>
+      </div>
+      <div class="br-tile">
+        <div class="br-logo"><img loading="lazy" decoding="async" src="uploads/Mitsuboshi-2f6d7202.jpg" alt="Mitsuboshi" class="h-10 rounded-lg object-contain"></div>
+        <h3 class="br-name">Mitsuboshi</h3>
+        <p class="br-desc">สายพานรถยนต์และมอเตอร์ไซค์</p>
       </div>
     </div>
-
-    <!-- CTA strip -->
+    <div class="br-foot">
+      <a href="#lineup" class="br-link">ดูน้ำมันเครื่อง Castrol ทั้ง 35 รุ่น</a>
+      <a href="https://line.me/R/oaMessage/%40nicecenter/?%E0%B8%AA%E0%B8%A7%E0%B8%B1%E0%B8%AA%E0%B8%94%E0%B8%B5%E0%B8%84%E0%B8%A3%E0%B8%B1%E0%B8%9A%20%E0%B8%AA%E0%B8%AD%E0%B8%9A%E0%B8%96%E0%B8%B2%E0%B8%A1%E0%B8%AD%E0%B8%B0%E0%B9%84%E0%B8%AB%E0%B8%A5%E0%B9%88%20%28Denso%20/%20NGK%20/%20Mitsuboshi%29%20%E0%B8%A3%E0%B8%B8%E0%B9%88%E0%B8%99%E0%B8%A3%E0%B8%96%3A%20......" target="_blank" rel="noopener" data-track="parts_line" class="br-link ghost">สอบถามอะไหล่ Denso, NGK, Mitsuboshi</a>
+    </div>
   </div>
 </section>
 
-<!-- ══════════════════════ SCROLLYTELLING — PRODUCT SHOWCASE ══════════════════════ -->
-<div id="scrollytelling">
 
-  <div class="story-section" id="story-fluid" style="height:280vh;">
-    <div id="fluid-scene">
-      <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 60% 80% at 50% 20%, rgba(252,200,98,0.06) 0%, transparent 60%);"></div>
-      <!-- header -->
-      <div id="fluid-header" class="absolute top-12 left-0 right-0 text-center pointer-events-none px-6" style="z-index:3;">
-        <div class="text-xs font-bold tracking-[0.25em] uppercase mb-3" style="color:rgba(252,200,98,0.7);font-family:'Outfit',sans-serif;">— Full Synthetic Technology —</div>
-        <h2 class="thai-head text-4xl md:text-5xl" style="color:var(--fluid-h, #fff);">น้ำมันสังเคราะห์ <span style="color:#fcc862;">100%</span></h2>
-        <p class="text-white/40 mt-2 text-sm md:text-base" style="font-family:'Noto Sans Thai',sans-serif;">ครอบคลุมทั้งรถยนต์และมอเตอร์ไซค์</p>
-      </div>
-
-      <!-- TWO BOTTLES SIDE-BY-SIDE -->
-      <div class="relative w-full max-w-5xl px-6" style="z-index:2;">
-        <div id="fluid-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-14 mt-24">
-
-          <!-- CAR -->
-          <div id="fluid-card-car" class="fluid-card relative rounded-3xl p-8 md:p-10 overflow-hidden" style="background:linear-gradient(155deg, rgba(9,146,71,0.18) 0%, rgba(9,146,71,0.04) 60%, transparent 100%);border:1px solid rgba(9,146,71,0.35);backdrop-filter:blur(8px);">
-            <div class="flex items-center gap-2 mb-1 text-xs font-bold tracking-[0.22em] uppercase" style="color:rgba(11,184,87,0.9);font-family:'Outfit',sans-serif;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 16H9m10 0h3v-3.15a1 1 0 00-.84-.99L16 11l-2.7-3.6a1 1 0 00-.8-.4H5.24a2 2 0 00-1.8 1.1l-.8 1.63A6 6 0 002 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>
-              For Cars
-            </div>
-            <div class="mb-2">
-              <div class="thai-head text-2xl md:text-3xl" style="color:#fff;">สังเคราะห์ <span style="color:#0bb857;">100%</span></div>
-              <div class="text-white/50 text-sm mt-1" style="font-family:'Noto Sans Thai',sans-serif;">สำหรับรถเก๋ง รถกระบะ รถบรรทุก</div>
-            </div>
-
-            <!-- real product lineup -->
-            <div class="bottle-stage car">
-              <div class="bottle-glow"></div>
-              <div class="bottle-fig" style="--bh:152px;"><img loading="lazy" decoding="async" src="uploads/fs/edge.png" alt="Castrol EDGE 5W-30 Full Synthetic" /><span class="bottle-cap" style="color:#0bb857;">EDGE</span></div>
-              <div class="bottle-fig" style="--bh:170px;"><img loading="lazy" decoding="async" src="uploads/fs/magnatec.png" alt="Castrol MAGNATEC 5W-30 Full Synthetic" /><span class="bottle-cap" style="color:#0bb857;">MAGNATEC</span></div>
-              <div class="bottle-fig" style="--bh:164px;"><img loading="lazy" decoding="async" src="uploads/fs/gtx.png" alt="Castrol GTX 0W-20 Full Synthetic" /><span class="bottle-cap" style="color:#0bb857;">GTX</span></div>
-            </div>
-
-            <div class="sep my-4 opacity-30"></div>
-            <div class="text-xs uppercase tracking-widest mb-1 text-white/40" style="font-family:'Outfit',sans-serif;">Full Synthetic Engine Oil</div>
-            <div class="text-white/85 text-base" style="font-family:'Noto Sans Thai',sans-serif;">EDGE · MAGNATEC · GTX</div>
-            <div class="absolute -bottom-12 -right-12 w-44 h-44 rounded-full pointer-events-none" style="background:radial-gradient(circle,#099247 0%,transparent 70%);opacity:0.18;"></div>
-          </div>
-
-          <!-- MOTORCYCLE -->
-          <div id="fluid-card-bike" class="fluid-card relative rounded-3xl p-8 md:p-10 overflow-hidden" style="background:linear-gradient(155deg, rgba(237,91,45,0.18) 0%, rgba(237,91,45,0.04) 60%, transparent 100%);border:1px solid rgba(237,91,45,0.35);backdrop-filter:blur(8px);">
-            <div class="flex items-center gap-2 mb-1 text-xs font-bold tracking-[0.22em] uppercase" style="color:rgba(237,91,45,0.9);font-family:'Outfit',sans-serif;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="17" r="3"/><circle cx="19" cy="17" r="3"/><path d="M14 17h-3l-2-9h5l1 4 4 5"/></svg>
-              For Motorcycles
-            </div>
-            <div class="mb-2">
-              <div class="thai-head text-2xl md:text-3xl" style="color:#fff;">สังเคราะห์ <span style="color:#ed5b2d;">100%</span></div>
-              <div class="text-white/50 text-sm mt-1" style="font-family:'Noto Sans Thai',sans-serif;">สำหรับรถจักรยานยนต์ทุกรุ่น</div>
-            </div>
-
-            <!-- real product hero -->
-            <div class="bottle-stage bike" style="justify-content:space-between;gap:14px;">
-              <div class="bottle-glow"></div>
-              <ul class="bike-feats">
-                <li><span class="fi">★</span><span>แบรนด์น้ำมันมอเตอร์ไซค์ <b>อันดับ 1 ของโลก</b></span></li>
-                <li><span class="fi">5</span><span>เทคโนโลยี <b>5-IN-1 FORMULA</b></span></li>
-                <li><span class="fi">4T</span><span>สังเคราะห์แท้ 100% · <b>10W-50</b></span></li>
-              </ul>
-              <div class="bottle-fig" style="--bh:236px;"><img loading="lazy" decoding="async" src="uploads/fs/power1.png" alt="Castrol POWER1 ULTIMATE 10W-50 4T Full Synthetic" /><span class="bottle-cap" style="color:#ed5b2d;">POWER1 ULTIMATE</span></div>
-            </div>
-
-            <div class="sep my-4 opacity-30"></div>
-            <div class="text-xs uppercase tracking-widest mb-1 text-white/40" style="font-family:'Outfit',sans-serif;">Full Synthetic 4T Motorcycle Oil</div>
-            <div class="text-white/85 text-base" style="font-family:'Noto Sans Thai',sans-serif;">POWER1 ULTIMATE</div>
-            <div class="absolute -bottom-12 -right-12 w-44 h-44 rounded-full pointer-events-none" style="background:radial-gradient(circle,#ed5b2d 0%,transparent 70%);opacity:0.18;"></div>
-          </div>
-
-        </div>
-
-        <!-- bottom note -->
-        <div id="fluid-foot" class="text-center mt-10 text-xs uppercase tracking-[0.25em] text-white/35" style="font-family:'Outfit',sans-serif;">
-          Castrol Official Distributor · ตัวแทนจำหน่ายอย่างเป็นทางการ
-        </div>
-      </div>
-    </div>
-  </div>
-</div><!-- end scrollytelling -->
 
 <!-- ══════════════════════ MARKET IMPACT ══════════════════════ -->
 <!-- ══════════════════════ LINEUP ══════════════════════ -->
@@ -1774,13 +1637,6 @@
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
       <!-- Castrol Auto Service -->
       <div class="impact-card p-6 reveal" style="transition-delay:0s;">
-        <!-- Placeholder image -->
-        <div class="w-full h-32 rounded-xl mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(9,146,71,0.2),rgba(9,146,71,0.05));border:1px solid rgba(9,146,71,0.2);">
-          <div class="text-center">
-            <img loading="lazy" decoding="async" src="uploads/Castrol_logo_2023.svg.png" alt="Castrol Auto Service" class="h-8 object-contain mx-auto mb-2 opacity-70"/>
-            <div class="text-xs text-white/30" style="font-family:'Outfit',sans-serif;">Auto Service</div>
-          </div>
-        </div>
         <div class="stat-num text-5xl mb-1" style="background:linear-gradient(135deg,#ed5b2d,#fcc862);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">120+</div>
         <div class="thai-head text-lg text-white mb-1">Castrol Auto Service</div>
         <div class="text-white/40 text-sm" style="font-family:'Noto Sans Thai',sans-serif;">ร้านบริการยานยนต์คู่ค้า</div>
@@ -1788,12 +1644,6 @@
 
       <!-- Castrol Bike Point -->
       <div class="impact-card p-6 reveal" style="transition-delay:0.1s;">
-        <div class="w-full h-32 rounded-xl mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(9,146,71,0.2),rgba(9,146,71,0.05));border:1px solid rgba(9,146,71,0.2);">
-          <div class="text-center">
-            <img loading="lazy" decoding="async" src="uploads/Castrol_logo_2023.svg.png" alt="Castrol Bike Point" class="h-8 object-contain mx-auto mb-2 opacity-70"/>
-            <div class="text-xs text-white/30" style="font-family:'Outfit',sans-serif;">Bike Point</div>
-          </div>
-        </div>
         <div class="stat-num text-5xl mb-1" style="background:linear-gradient(135deg,#ed5b2d,#fcc862);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">150+</div>
         <div class="thai-head text-lg text-white mb-1">Castrol Bike Point</div>
         <div class="text-white/40 text-sm" style="font-family:'Noto Sans Thai',sans-serif;">ร้านซ่อมรถจักรยานยนต์คู่ค้า</div>
@@ -1801,12 +1651,6 @@
 
       <!-- PCO -->
       <div class="impact-card p-6 reveal" style="transition-delay:0.2s;">
-        <div class="w-full h-32 rounded-xl mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(252,200,98,0.15),rgba(252,200,98,0.03));border:1px solid rgba(252,200,98,0.15);">
-          <div class="text-center">
-            <div class="text-2xl font-black text-white/20" style="font-family:'Outfit',sans-serif;">PCO</div>
-            <div class="text-xs text-white/20 mt-1" style="font-family:'Outfit',sans-serif;">Passenger Car Outlet</div>
-          </div>
-        </div>
         <div class="stat-num text-5xl mb-1" style="background:linear-gradient(135deg,#ed5b2d,#fcc862);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">40+</div>
         <div class="thai-head text-lg text-white mb-1">PCO</div>
         <div class="text-white/40 text-sm" style="font-family:'Noto Sans Thai',sans-serif;">อู่ซ่อมรถยนต์อิสระ</div>
@@ -1814,12 +1658,6 @@
 
       <!-- MCO -->
       <div class="impact-card p-6 reveal" style="transition-delay:0.3s;">
-        <div class="w-full h-32 rounded-xl mb-5 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(237,91,45,0.15),rgba(237,91,45,0.03));border:1px solid rgba(237,91,45,0.15);">
-          <div class="text-center">
-            <div class="text-2xl font-black text-white/20" style="font-family:'Outfit',sans-serif;">MCO</div>
-            <div class="text-xs text-white/20 mt-1" style="font-family:'Outfit',sans-serif;">Motorcycle Care Outlet</div>
-          </div>
-        </div>
         <div class="stat-num text-5xl mb-1" style="background:linear-gradient(135deg,#ed5b2d,#fcc862);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">100+</div>
         <div class="thai-head text-lg text-white mb-1">MCO</div>
         <div class="text-white/40 text-sm" style="font-family:'Noto Sans Thai',sans-serif;">อู่ซ่อมมอเตอร์ไซค์อิสระ</div>
@@ -1841,58 +1679,6 @@
         <h2 class="thai-head text-4xl md:text-5xl text-dark mb-4">ไว้วางใจโดย<br/><span class="grad-text">คู่ค้าทั่วภาคกลาง</span></h2>
         <p class="text-dark/55 leading-relaxed mb-6" style="font-family:'Noto Sans Thai',sans-serif;">รองรับลูกค้าทั้งรายย่อยและโปรเจกต์ระดับจังหวัด ด้วยระบบการดำเนินงานที่มีมาตรฐานองค์กรครบวงจร</p>
 
-        <div class="space-y-3 mb-8">
-          <div class="flex items-start gap-3 glass rounded-2xl p-4">
-            <div class="w-8 h-8 bg-nice/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
-            <div>
-              <div class="font-bold text-dark text-sm">100% Authentic</div>
-              <div class="text-sm text-dark/55 mt-0.5" style="font-family:'Noto Sans Thai',sans-serif;">การันตีสินค้าแท้ทุกชิ้น ส่งตรงจากบริษัทผู้ผลิต ไม่ผ่านคนกลาง</div>
-            </div>
-          </div>
-          <div class="flex items-start gap-3 glass rounded-2xl p-4">
-            <div class="w-8 h-8 bg-nice/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-            </div>
-            <div>
-              <div class="font-bold text-dark text-sm">Professional Operation</div>
-              <div class="text-sm text-dark/55 mt-0.5" style="font-family:'Noto Sans Thai',sans-serif;">ทีม Admin ซัพพอร์ต · DSR ให้คำปรึกษา · ทีมขนส่งของบริษัทเองจัดส่งตามรอบสัปดาห์</div>
-            </div>
-          </div>
-          <div class="flex items-start gap-3 glass rounded-2xl p-4">
-            <div class="w-8 h-8 bg-nice/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ed5b2d" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            </div>
-            <div>
-              <div class="font-bold text-dark text-sm">Corporate Standard</div>
-              <div class="text-sm text-dark/55 mt-0.5" style="font-family:'Noto Sans Thai',sans-serif;">รองรับลูกค้าทั้งรายย่อยและโปรเจกต์ระดับจังหวัด พร้อมออกใบกำกับภาษีเต็มรูปแบบ</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-6 mb-10">
-          <div class="glass rounded-2xl p-6">
-            <div class="stat-num text-5xl grad-text counter" data-target="20">20</div>
-            <div class="text-nice font-bold text-lg">+ ปี</div>
-            <div class="text-sm text-dark/55 mt-1">ดำเนินธุรกิจมายาวนาน</div>
-          </div>
-          <div class="glass rounded-2xl p-6">
-            <div class="stat-num text-5xl grad-text counter" data-target="6">6</div>
-            <div class="text-nice font-bold text-lg">จังหวัด</div>
-            <div class="text-sm text-dark/55 mt-1">พื้นที่ให้บริการ</div>
-          </div>
-          <div class="glass rounded-2xl p-6">
-            <div class="stat-num text-5xl grad-text">100%</div>
-            <div class="text-nice font-bold text-lg">&nbsp;</div>
-            <div class="text-sm text-dark/55 mt-1">สินค้าแท้รับประกัน</div>
-          </div>
-          <div class="glass rounded-2xl p-6">
-            <div class="stat-num text-5xl grad-text counter" data-target="4">4</div>
-            <div class="text-nice font-bold text-lg">แบรนด์</div>
-            <div class="text-sm text-dark/55 mt-1">พันธมิตรชั้นนำ</div>
-          </div>
-        </div>
       </div>
 
       <div class="reveal" style="transition-delay:0.2s">
@@ -1960,23 +1746,7 @@
           </a>
         </div>
       </div>
-      <div class="text-center text-xs font-bold tracking-widest uppercase text-dark/30 mb-8">พันธมิตรหลัก</div>
-      <div class="flex flex-wrap items-center justify-center gap-8">
-        <div class="partner-logo-wrap glass rounded-2xl px-8 py-4 flex items-center justify-center h-16">
-          <img loading="lazy" decoding="async" src="uploads/Castrol_logo_2023.svg.png" alt="Castrol" class="h-8 object-contain" />
-        </div>
-        <div class="partner-logo-wrap glass rounded-2xl px-8 py-4 flex items-center justify-center h-16">
-          <img loading="lazy" decoding="async" src="uploads/Denso.png" alt="Denso" class="h-7 object-contain" />
-        </div>
-        <div class="partner-logo-wrap glass rounded-2xl px-8 py-4 flex items-center justify-center h-16 gap-3">
-          <img loading="lazy" decoding="async" src="uploads/Niterra.jpg" alt="Niterra" class="h-8 w-8 object-cover rounded-lg" />
-          <span class="font-bold text-dark text-sm">Niterra</span>
-        </div>
-        <div class="partner-logo-wrap glass rounded-2xl px-8 py-4 flex items-center justify-center gap-3 h-16">
-          <img loading="lazy" decoding="async" src="uploads/Mitsuboshi-2f6d7202.jpg" alt="Mitsuboshi" class="h-8 object-contain rounded-md" />
-          <span class="font-black text-dark/70 text-sm tracking-tight" style="font-family:'Outfit',sans-serif;">MITSUBOSHI</span>
-        </div>
-      </div>
+      
     </div>
   </div>
 </section>
@@ -1987,7 +1757,7 @@
   <div class="max-w-3xl mx-auto">
     <p class="text-sm font-semibold tracking-widest mb-3" style="color:var(--accent);">FAQ</p>
     <h2 class="thai-head text-3xl md:text-4xl mb-8" style="color:var(--text-strong);">คำถามที่พบบ่อย</h2>
-      <details><summary>Nice Center Oil จำหน่ายน้ำมันเครื่องยี่ห้ออะไรบ้าง?</summary><p>เราเป็นตัวแทนจำหน่ายอย่างเป็นทางการของ Castrol (น้ำมันเครื่องรถยนต์ รถบรรทุก มอเตอร์ไซค์ และน้ำมันเกียร์) เท่านั้น ไม่ได้จำหน่ายน้ำมันเครื่องยี่ห้ออื่น เช่น ZIC, Elf, Shell หรือ PTT</p></details>
+      <details><summary>Nice Center Oil จำหน่ายน้ำมันเครื่องยี่ห้ออะไรบ้าง?</summary><p>เราเป็นตัวแทนจำหน่าย Castrol อย่างเป็นทางการ ครบทั้งน้ำมันเครื่องรถยนต์ รถกระบะ รถบรรทุก มอเตอร์ไซค์ และน้ำมันเกียร์ หากต้องการน้ำมันเครื่องยี่ห้ออื่น ทักไลน์ @nicecenter ได้เลย เราส่งต่อให้ร้านยนต์ประกิจ หน้าร้านขายปลีกที่มีครบทุกยี่ห้อ</p></details>
       <details><summary>รับสินค้าแบรนด์อะไรนอกจาก Castrol?</summary><p>อะไหล่ Denso (ไส้กรองน้ำมันเครื่อง หัวเทียนมอเตอร์ไซค์), หัวเทียน NGK/Niterra และสายพาน Mitsuboshi</p></details>
       <details><summary>ส่งสินค้าในพื้นที่ไหนบ้าง?</summary><p>ส่งด้วยทีมขนส่งของบริษัทเองตามรอบประจำสัปดาห์ ครอบคลุม 6 จังหวัด: สุพรรณบุรี สิงห์บุรี อ่างทอง ชัยนาท อุทัยธานี และนครสวรรค์</p></details>
       <details><summary>ขายปลีกให้ผู้ใช้รถทั่วไปหรือไม่?</summary><p>เราเป็นผู้จัดจำหน่ายส่งให้ร้านค้า อู่ซ่อมรถ ศูนย์บริการ และลูกค้าองค์กร หากต้องการเปลี่ยนน้ำมันเครื่อง ทักไลน์ @nicecenter ให้เราแนะนำร้านคู่ค้าใกล้บ้านได้</p></details>
@@ -2260,28 +2030,46 @@ gsap.utils.toArray('.reveal').forEach(el => {
   if(!usesEl||!out) return;
   const bottle=n=>`<svg viewBox="0 0 120 220" aria-hidden="true"><path d="M42 10h36v22l14 18v150a10 10 0 0 1-10 10H38a10 10 0 0 1-10-10V50l14-18z" fill="#0b7a3e"/><rect x="40" y="2" width="40" height="16" rx="4" fill="#e3001b"/><rect x="36" y="92" width="48" height="66" rx="6" fill="#fff" opacity=".95"/><text x="60" y="122" text-anchor="middle" font-family="Barlow" font-weight="900" font-style="italic" font-size="${n.length>6?11:15}" fill="#0b7a3e">${n}</text><text x="60" y="140" text-anchor="middle" font-family="Barlow" font-weight="700" font-size="8" fill="#e3001b">CASTROL</text></svg>`;
   let v='bike', u=0;
-  function render(){
-    tiles.forEach(t=>t.setAttribute('aria-pressed', t.dataset.v===v));
+  // build the result card once; later we only update its contents
+  out.innerHTML=`<div class="fd-bottle"><div class="fd-bottle-inner"></div></div>
+    <div class="relative">
+      <span class="fd-tag"></span>
+      <div class="fd-name"></div>
+      <p class="fd-why"></p>
+      <p class="fd-note">${NOTE}</p>
+      <div class="fd-actions">
+        <a class="fd-btn line" data-track="finder_line" href="#" target="_blank" rel="noopener">ถามร้านใกล้บ้านทางไลน์</a>
+        <a class="fd-btn ghost" href="tel:0632029333">โทร 063-202-9333</a>
+      </div>
+    </div>`;
+  const el={box:out.querySelector('.fd-bottle-inner'),tag:out.querySelector('.fd-tag'),name:out.querySelector('.fd-name'),why:out.querySelector('.fd-why'),line:out.querySelector('.fd-btn.line')};
+  const cache={};
+  function load(src){ if(!cache[src]){ const im=new Image(); im.decoding='async'; im.src=src; cache[src]=(im.decode?im.decode():Promise.resolve()).catch(()=>{}).then(()=>im); } return cache[src]; }
+  // warm every finder bottle once the section is near the viewport
+  new IntersectionObserver((es,o)=>{ if(es[0].isIntersecting){ Object.values(P).forEach(x=>x.img&&load(x.img)); o.disconnect(); } },{rootMargin:'400px'}).observe(out);
+  function buildUses(){
     usesEl.innerHTML=V[v].uses.map((x,i)=>`<button type="button" class="fd-use" data-i="${i}" aria-pressed="${i===u}">${x[0]}</button>`).join('');
-    document.getElementById('fd-use-wrap').style.display = V[v].uses.length>1 ? '' : 'none';
-    const key=V[v].uses[u][1], p=P[key];
-    const msg=`สวัสดีครับ สนใจน้ำมัน Castrol ${p.name} สำหรับ${V[v].label} (${V[v].uses[u][0]}) อยู่แถว...... มีร้านไหนใกล้บ้านบ้างครับ`;
-    out.innerHTML=`<div class="fd-bottle fd-swap">${p.img?`<img src="${p.img}" alt="Castrol ${p.name}">`:bottle(p.name)}</div>
-      <div class="relative fd-swap" style="animation-delay:.05s">
-        <span class="fd-tag">${p.tag}</span>
-        <div class="fd-name">Castrol ${p.name}</div>
-        <p class="fd-why">${p.why}</p>
-        <p class="fd-note">${NOTE}</p>
-        <div class="fd-actions">
-          <a class="fd-btn line" data-track="finder_line" href="https://line.me/R/oaMessage/${LINE_ID}/?${encodeURIComponent(msg)}" target="_blank" rel="noopener">ถามร้านใกล้บ้านทางไลน์</a>
-          <a class="fd-btn ghost" href="tel:0632029333">โทร 063-202-9333</a>
-        </div>
-      </div>`;
-    if(window.gtag) gtag('event','finder_select',{vehicle:v, product:key});
   }
-  tiles.forEach(t=>t.addEventListener('click',()=>{ v=t.dataset.v; u=0; render(); }));
-  usesEl.addEventListener('click',e=>{ const b=e.target.closest('.fd-use'); if(!b) return; u=+b.dataset.i; render(); });
-  render();
+  let token=0;
+  function show(track){
+    tiles.forEach(t=>t.setAttribute('aria-pressed', t.dataset.v===v));
+    usesEl.querySelectorAll('.fd-use').forEach(b=>b.setAttribute('aria-pressed', +b.dataset.i===u));
+    const key=V[v].uses[u][1], p=P[key], my=++token;
+    el.tag.textContent=p.tag; el.name.textContent='Castrol '+p.name; el.why.textContent=p.why;
+    const msg=`สวัสดีครับ สนใจน้ำมัน Castrol ${p.name} สำหรับ${V[v].label} (${V[v].uses[u][0]}) อยู่แถว...... มีร้านไหนใกล้บ้านบ้างครับ`;
+    el.line.href=`https://line.me/R/oaMessage/${LINE_ID}/?${encodeURIComponent(msg)}`;
+    const ready = p.img ? load(p.img) : Promise.resolve(null);
+    el.box.classList.add('is-out');
+    Promise.all([ready, new Promise(r=>setTimeout(r,150))]).then(([im])=>{
+      if(my!==token) return;
+      el.box.innerHTML = im ? `<img src="${p.img}" alt="Castrol ${p.name}">` : bottle(p.name);
+      requestAnimationFrame(()=>el.box.classList.remove('is-out'));
+    });
+    if(track && window.gtag) gtag('event','finder_select',{vehicle:v, product:key});
+  }
+  tiles.forEach(t=>t.addEventListener('click',()=>{ if(t.dataset.v===v) return; v=t.dataset.v; u=0; buildUses(); show(true); }));
+  usesEl.addEventListener('click',e=>{ const b=e.target.closest('.fd-use'); if(!b || +b.dataset.i===u) return; u=+b.dataset.i; show(true); });
+  buildUses(); show(false);
 })();
 
 // ── Lineup: tabs + grade swap + LINE ask ──
@@ -2371,47 +2159,7 @@ document.querySelectorAll('.counter').forEach(counter => {
   });
 });
 
-(function() {
-  const section = document.getElementById('story-fluid');
-  if (!section) return;
-  const scene   = document.getElementById('fluid-scene');
-
-  const mm = gsap.matchMedia();
-
-  // Desktop / tablet: pinned scrolly animation
-  mm.add('(min-width: 769px)', () => {
-    ScrollTrigger.create({
-      trigger: section,
-      start: 'top top',
-      end: 'bottom bottom',
-      pin: scene,
-      pinSpacing: false
-    });
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1.2
-      }
-    });
-
-    gsap.set('#fluid-card-car',  { opacity: 0, y: 50, scale: 0.96 });
-    gsap.set('#fluid-card-bike', { opacity: 0, y: 50, scale: 0.96 });
-    gsap.set('#fluid-foot',      { opacity: 0, y: 20 });
-
-    tl.to('#fluid-card-car',  { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.1)
-      .to('#fluid-card-bike', { opacity: 1, y: 0, scale: 1, duration: 0.7 }, 0.5)
-      .to('#fluid-foot',      { opacity: 1, y: 0, duration: 0.5 }, 1.0);
-  });
-
-  // Mobile: no pin — cards simply visible and flowing
-  mm.add('(max-width: 768px)', () => {
-    gsap.set(['#fluid-card-car', '#fluid-card-bike', '#fluid-foot'],
-      { opacity: 1, y: 0, scale: 1, clearProps: 'transform' });
-  });
-})();
+// (Full-synthetic scroll showcase removed — covered by #lineup)
 
 // ─── INTERACTIVE PROVINCE MAP ───
 const PROVINCE_DATA = {
