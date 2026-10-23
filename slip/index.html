@@ -27,7 +27,7 @@
     document.body.innerHTML = '<p class="msg">ลิงก์ไม่ครบ — ใช้ลิงก์ส่วนตัวที่ได้รับทาง LINE</p>';
   } else {
     var f = document.createElement('iframe');
-    f.src = EXEC + '?k=' + encodeURIComponent(k);
+    f.src = EXEC + location.search;   // ส่งต่อทั้ง ?k= และ &s=<slipId> (ลิงก์จาก LINE)
     f.title = 'สลิปโอนเงิน';
     f.allow = 'clipboard-write';
     document.body.appendChild(f);
